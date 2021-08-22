@@ -1,3 +1,4 @@
+import Jama.Matrix;
 import scala.Tuple2;
 
 import java.io.IOException;
@@ -27,16 +28,16 @@ public class Main {
         double[][]img2D=KSRCNF.img2D;
         Tuple2<double[][],double[][]> ATA_ATX= KSRCNF.ker_lwm();
 
+//        double [][] Ktrain=ATA_ATX._1;
+//        double [][] Ktest=ATA_ATX._2;
+//
+//        int[] trainidx2Da=KSRCNF.trainidx2D;
+//          int[][] trainposa=KSRCNF.trainpos;
+//          int[] trainijw_sizea=KSRCNF.trainijw_size;
+//          double[][]trainijw2D_weighta=KSRCNF.trainijw2D_weight;
+//          int[][]train_ijw2Da=KSRCNF.train_ijw2D;
 
-
-        double [][] Ktrain=ATA_ATX._1;
-        double [][] Ktest=ATA_ATX._2;
-
-        int[] trainidx2Da=KSRCNF.trainidx2D;
-          int[][] trainposa=KSRCNF.trainpos;
-          int[] trainijw_sizea=KSRCNF.trainijw_size;
-          double[][]trainijw2D_weighta=KSRCNF.trainijw2D_weight;
-          int[][]train_ijw2Da=KSRCNF.train_ijw2D;
+        Matrix S = Tools.ADMM(ATA_ATX._1,ATA_ATX._2,mu,lam);
 
 
 //        CsvWriter csvWriter = new CsvWriter("./out/Ktrain.csv", ',', Charset.forName("UTF-8"));
