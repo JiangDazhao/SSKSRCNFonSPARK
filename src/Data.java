@@ -10,15 +10,18 @@ public class Data {
       static short [][] rawimg2D;
       static double [][] img2D;
       static double [][][] img3D;
-      static double [][] img_gt;
+      static int [][] img_gt;
       static int [] trainidx2D;
       static int [] testidx2D;
+      static int [] trainlab;
+      static int [] testlab;
+
 
       static int rows;
       static int cols;
       static int bands;
-    public Data(String sdataset, String strainidx2D, String stestidx2D) throws IOException {
-        //load data
+    public Data(String sdataset, String strainidx2D, String stestidx2D, String groundtruth) throws IOException {
+        //load img data
         String datapathname="./resources/"+sdataset;
         String trainidxpathname="./resources/"+strainidx2D;
         String testidxpathname="./resources/"+stestidx2D;
@@ -30,6 +33,19 @@ public class Data {
         this.cols = (int)img_dimentions[1];
         this.bands= (int)img_dimentions[2];
 
+        // load img_gt
+        String gtpathname="./resources/"+groundtruth;
+        ImportMatrixMAT groundimg = new ImportMatrixMAT();
+        File groundimgfile  = new File(datapathname);
+        Matrix Matrixgroundimg = testimg.fromFile(groundimgfile);
+        this.img_gt=new int[rows][cols];
+        for(int i=0;i<rows;i++)
+            for(int j=0;j<cols;j++){
+                this.img_gt[i][j]=Matrixgroundimg.getAsInt(i,j);
+            }
+
+
+        //trainidx2D
         ImportMatrixMAT import_train = new ImportMatrixMAT();
         File trainfile = new File(trainidxpathname);
         Matrix matrix_train = import_train.fromFile(trainfile);
@@ -39,6 +55,7 @@ public class Data {
         for(int i=0;i<trainlen;i++)
             this.trainidx2D[i]= matrix_train.getAsInt(0,i)-1;
 
+        //testidx2D
         ImportMatrixMAT import_test = new ImportMatrixMAT();
         File testfile = new File(testidxpathname);
         Matrix matrix_test = import_test.fromFile(testfile);
@@ -48,6 +65,21 @@ public class Data {
         for(int i=0;i<testlen;i++)
             this.testidx2D[i]= matrix_test.getAsInt(0,i)-1;
 
+        //trainlab
+        this.trainlab=new int[trainidx2D.length];
+        for(int i=0;i<trainlab.length;i++){
+            int gdrow= trainidx2D[i]%rows;
+            int gdcol=trainidx2D[i]/cols;
+            trainlab[i]=img_gt[gdrow][gdcol];
+        }
+
+        //testlab
+        this.testlab=new int[testidx2D.length];
+        for(int i=0;i<testlab.length;i++){
+            int gdrow= testidx2D[i]%rows;
+            int gdcol=testidx2D[i]/cols;
+            testlab[i]=img_gt[gdrow][gdcol];
+        }
 
         //reshape3d_2d
         this.rawimg2D = new short[bands][rows*cols];

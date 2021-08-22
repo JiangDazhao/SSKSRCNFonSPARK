@@ -15,14 +15,16 @@ public class KSRCNF {
     static int cols;
     static int bands;
     static double[][] img2D;
-    static double[][] img_gt;
+    static int[][] img_gt;
     static int []trainidx2D;
     static int []testidx2D;
+    static int []trainlab;
+    static int []testlab;
 
-        public static void KSRCNFinit(String sdataset, String strainidx2D, String stestidx2D,
+        public static void KSRCNFinit(String sdataset, String strainidx2D, String stestidx2D, String groundtruth,
                       int wind,double mu,double lam,
                       double gam_w,double gam_K) throws IOException {
-            data=new Data(sdataset, strainidx2D, stestidx2D);
+            data=new Data(sdataset, strainidx2D, stestidx2D,groundtruth);
             KSRCNF.wind=wind;
             KSRCNF.mu=mu;
             KSRCNF.lam=lam;
@@ -33,6 +35,8 @@ public class KSRCNF {
             img_gt=data.img_gt;
             trainidx2D=data.trainidx2D;
             testidx2D=data.testidx2D;
+            trainlab=data.trainlab;
+            testlab=data.testlab;
             KSRCNF.gam_w=gam_w;
             KSRCNF.gam_K=gam_K;
         }
@@ -305,7 +309,7 @@ public class KSRCNF {
 //        QPmap.put(KernelQP.ATA,A);
 //        System.out.println(QPmap.get(KernelQP.ATA).toString());
 //    }
-
+//
 //    public static void main(String[] args) {
 //        double[][] iwreparray= {{1.,1.},{1.,1.},{1.,1.}};
 //        double[][] jwreparray= {{1.,1.},{1.,1.},{1.,1.}};
@@ -317,6 +321,11 @@ public class KSRCNF {
 //        System.out.println(ijwmat.getColumnDimension());
 //        ijwmat.print(3,3);
 //        System.out.println(ijwmat.getColumnDimension()*ijwmat.getRowDimension());
+//        double [][]arraycopy= iwrepmat.getArrayCopy();
+//        for(int i=0;i<arraycopy.length;i++)
+//            for(int j=0;j<arraycopy[0].length;j++){
+//                System.out.println(arraycopy[i][j]+" ");
+//            }
 //    }
 
 //    public static void main(String[] args) {

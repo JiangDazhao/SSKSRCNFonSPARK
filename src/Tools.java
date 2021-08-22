@@ -16,9 +16,19 @@ public class Tools {
 
         public static double[] classker_pred(double[][]ATA,double[][]ATX,
                                              double[][]coef,
-                                             double[]test_lab, double[]dict_lab){
+                                             int[]test_lab, int[]dict_lab){
+            double [] pred= new double[dict_lab.length];
 
-            return null;
+
+
+
+
+
+
+
+
+
+            return pred;
         }
 
 

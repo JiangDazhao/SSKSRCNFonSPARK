@@ -1,6 +1,7 @@
 import Jama.Matrix;
 import scala.Tuple2;
 
+import javax.tools.Tool;
 import java.io.IOException;
 
 public class Main {
@@ -20,9 +21,12 @@ public class Main {
         KSRCNF.KSRCNFinit("Indian_pines_corrected.mat",
                 "trainidxtest.mat",
                 "testidxtest.mat",
+                "Indian_gt.mat",
                 wind,mu,lam,gam_w,gam_K);
         int []trainidx2D=KSRCNF.trainidx2D;
         int []testidx2D=KSRCNF.testidx2D;
+        int []trainlab=KSRCNF.trainlab;
+        int []testlab=KSRCNF.testlab;
         int rows =KSRCNF.rows;
         int cols =KSRCNF.cols;
         double[][]img2D=KSRCNF.img2D;
@@ -39,6 +43,8 @@ public class Main {
 
         Matrix S = Tools.ADMM(ATA_ATX._1,ATA_ATX._2,mu,lam);
 
+        double[] pred;
+        pred= Tools.classker_pred(ATA_ATX._1,ATA_ATX._2,S.getArrayCopy(),testlab,trainlab);
 
 //        CsvWriter csvWriter = new CsvWriter("./out/Ktrain.csv", ',', Charset.forName("UTF-8"));
 //        int imgrow=Ktrain.length;
