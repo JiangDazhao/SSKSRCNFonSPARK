@@ -97,9 +97,9 @@ public class Tools {
 //                System.out.println();
 //            }
 
-            Matrix preddictmat= new Matrix(preddisterr);
-            System.out.println("preddisterr：");
-            preddictmat.print(preddictmat.getRowDimension(),preddictmat.getColumnDimension());
+//            Matrix preddictmat= new Matrix(preddisterr);
+//            System.out.println("preddisterr：");
+//            preddictmat.print(preddictmat.getRowDimension(),preddictmat.getColumnDimension());
 
             return pred;
         }
@@ -133,7 +133,7 @@ public class Tools {
         public static double classeval(int[]pred, int[]testlab){
             double OA=0;
             for(int i=0;i<pred.length;i++){
-                   System.out.println("pred标签"+pred[i]+" "+"testlab标签"+testlab[i]);
+                   //System.out.println("pred标签"+pred[i]+" "+"testlab标签"+testlab[i]);
                    if (pred[i]==testlab[i]) OA+=1.0;
                }
             OA= OA/pred.length*100.0;

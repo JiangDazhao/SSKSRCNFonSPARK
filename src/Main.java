@@ -19,8 +19,8 @@ public class Main {
         gam_K=14.904789935208639;//sig
         gam_w=0.742065795512883;//sig0s
         KSRCNF.KSRCNFinit("Indian_pines_corrected.mat",
-                "trainidxtest.mat",
-                "testidxtest.mat",
+                "trainidx.mat",
+                "testidx.mat",
                 "Indian_gt.mat",
                 wind,mu,lam,gam_w,gam_K);
         int []trainidx2D=KSRCNF.trainidx2D;
@@ -31,7 +31,12 @@ public class Main {
         int rows =KSRCNF.rows;
         int cols =KSRCNF.cols;
         double[][]img2D=KSRCNF.img2D;
+
+        double t1=System.currentTimeMillis();
         Tuple2<double[][],double[][]> ATA_ATX= KSRCNF.ker_lwm();
+        double t2=System.currentTimeMillis();
+        System.out.println("ker_lwm time:"+(t2-t1)*1.0/1000+"s");
+
 
 //        double [][] Ktrain=ATA_ATX._1;
 //        double [][] Ktest=ATA_ATX._2;
@@ -42,7 +47,10 @@ public class Main {
 //          double[][]trainijw2D_weighta=KSRCNF.trainijw2D_weight;
 //          int[][]train_ijw2Da=KSRCNF.train_ijw2D;
 
+        double t3=System.currentTimeMillis();
         Matrix S = Tools.ADMM(ATA_ATX._1,ATA_ATX._2,mu,lam);
+        double t4=System.currentTimeMillis();
+        System.out.println("ADMM time:"+(t4-t3)*1.0/1000+"s");
 //        S.print(S.getRowDimension(),S.getColumnDimension());
 //        double[][] Stoarray= S.getArray();
 //        for(int i=0;i<S.getRowDimension();i++){
@@ -57,7 +65,7 @@ public class Main {
 
         double OA;
         OA= Tools.classeval(pred,testlab);
-        System.out.println(OA);
+        System.out.println("Overall Accuracy:"+String.format("%.2f",OA)+"%");
 //        CsvWriter csvWriter = new CsvWriter("./out/Ktrain.csv", ',', Charset.forName("UTF-8"));
 //        int imgrow=Ktrain.length;
 //        int imgcol=Ktrain[0].length;

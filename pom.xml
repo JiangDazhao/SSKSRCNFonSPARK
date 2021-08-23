@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>KSRCjava</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <scala.version>2.10.6</scala.version>
+        <spark.version>1.6.2</spark.version>
+        <hadoop.version>2.6.4</hadoop.version>
+        <encoding>UTF-8</encoding>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.ujmp/ujmp-jmatio -->
+        <dependency>
+            <groupId>org.ujmp</groupId>
+            <artifactId>ujmp-jmatio</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.ujmp/ujmp-core -->
+        <dependency>
+            <groupId>org.ujmp</groupId>
+            <artifactId>ujmp-core</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv -->
+        <dependency>
+            <groupId>net.sourceforge.javacsv</groupId>
+            <artifactId>javacsv</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/gov.nist.math/jama -->
+        <dependency>
+            <groupId>gov.nist.math</groupId>
+            <artifactId>jama</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.scala-lang/scala-library -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
