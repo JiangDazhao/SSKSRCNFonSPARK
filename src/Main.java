@@ -27,6 +27,7 @@ public class Main {
         int []testidx2D=KSRCNF.testidx2D;
         int []trainlab=KSRCNF.trainlab;
         int []testlab=KSRCNF.testlab;
+       // for(int i=0;i<trainlab.length;i++) System.out.println(trainlab[i]);
         int rows =KSRCNF.rows;
         int cols =KSRCNF.cols;
         double[][]img2D=KSRCNF.img2D;
@@ -42,6 +43,14 @@ public class Main {
 //          int[][]train_ijw2Da=KSRCNF.train_ijw2D;
 
         Matrix S = Tools.ADMM(ATA_ATX._1,ATA_ATX._2,mu,lam);
+//        S.print(S.getRowDimension(),S.getColumnDimension());
+//        double[][] Stoarray= S.getArray();
+//        for(int i=0;i<S.getRowDimension();i++){
+//            for(int j=0;j<S.getColumnDimension();j++){
+//                System.out.print(Stoarray[i][j]+" ");
+//            }
+//            System.out.println();
+//        }
 
         int [] pred;
         pred= Tools.classker_pred(ATA_ATX._1,ATA_ATX._2,S.getArrayCopy(),testlab,trainlab);

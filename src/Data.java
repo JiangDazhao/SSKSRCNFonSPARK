@@ -36,12 +36,13 @@ public class Data {
         // load img_gt
         String gtpathname="./resources/"+groundtruth;
         ImportMatrixMAT groundimg = new ImportMatrixMAT();
-        File groundimgfile  = new File(datapathname);
-        Matrix Matrixgroundimg = testimg.fromFile(groundimgfile);
+        File groundimgfile  = new File(gtpathname);
+        Matrix Matrixgroundimg = groundimg.fromFile(groundimgfile);
         this.img_gt=new int[rows][cols];
         for(int i=0;i<rows;i++)
             for(int j=0;j<cols;j++){
-                this.img_gt[i][j]=Matrixgroundimg.getAsInt(i,j)-1;
+                this.img_gt[i][j]=Matrixgroundimg.getAsInt(i,j);
+                 //System.out.println(Matrixgroundimg.getAsInt(i,j));
             }
 
 

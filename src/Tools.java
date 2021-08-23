@@ -20,44 +20,87 @@ public class Tools {
         public static int[] classker_pred(double[][]ATA,double[][]ATX,
                                              double[][]coef,
                                              int[]test_lab, int[]dict_lab){
+//            System.out.println("dict_lab：");
+//            for(int i=0;i<dict_lab.length;i++) System.out.print(dict_lab[i]+" ");
+//            System.out.println();
+
             int [] pred= new int[test_lab.length];
-            double [][]preddist;
+            double [][]preddisterr;
+            int [][] kclsinDict;
             int nClass;
             int nTest;
-            Set setdict_lab= new HashSet();
+            Set <Integer>clsset= new HashSet();
             for(int i=0;i<dict_lab.length;i++){
-                setdict_lab.add(dict_lab[i]);
+                clsset.add(dict_lab[i]);
             }
-            nClass=setdict_lab.size();
+            int []clsarray =new int[clsset.size()];
+            int clsarrayidx=0;
+            for(int cls:clsset) clsarray[clsarrayidx++]=cls;
+//            System.out.println("clsset次序：");
+//            for(int cls:clsset){
+//                System.out.println(cls);
+//            }
+            nClass=clsset.size();
+            //System.out.println(test_lab.length);
+            //System.out.println(dict_lab.length);
+            //System.out.println(nClass);//3
+
             nTest=test_lab.length;
-            preddist=new double[nClass][nTest];
+            preddisterr=new double[nClass][nTest];
             for(int t=0;t<nTest;t++){ //each test
                 double[] err= new double[nClass];
-
-                for(int k=0;k<nClass;k++){ //each k is the label class minus 1
-                    int []kclassinDict= new int[dict_lab.length];
-                    for(int i=0;i<kclassinDict.length;i++){
-                        if (dict_lab[i]==k) kclassinDict[i]=1;
-                        else kclassinDict[i]=0;
+                int nclassindex=0;
+                for(int cls:clsset){
+                    kclsinDict=new int[dict_lab.length][nTest];
+                    for (int j = 0; j < dict_lab.length; j++) {
+                            if (dict_lab[j] == cls) kclsinDict[j][t] = 1;
+                            else kclsinDict[j][t] = 0;
                     }
+
                     Matrix coefmat= new Matrix(coef);
+                    //coefmat.print(coefmat.getRowDimension(),coefmat.getColumnDimension());
+
                     Matrix ATAmat = new Matrix(ATA);
                     Matrix ATXmat = new Matrix(ATX);
-                    Matrix xt_ATA_x= ((coefmat.getMatrix(kclassinDict,new int[]{t}).transpose())
-                                  .times(ATAmat.getMatrix(kclassinDict,kclassinDict)))
-                                  .times(coefmat.getMatrix(kclassinDict,new int[]{t}));
-                    Matrix two_xt_ATX=((coefmat.getMatrix(kclassinDict,new int[]{t}).transpose())
+
+//                    Matrix selectdictmat = coefmat.getMatrix(kclassinDict,new int[]{t});
+//                    selectdictmat.print(selectdictmat.getRowDimension(),selectdictmat.getColumnDimension());
+
+                    int []classinDict_pert= new int[dict_lab.length];
+                    for(int i=0;i<dict_lab.length;i++){
+                        classinDict_pert[i]=kclsinDict[i][t];
+                    }
+
+                    Matrix xt_ATA_x= ((coefmat.getMatrix(classinDict_pert,new int[]{t}).transpose())
+                                  .times(ATAmat.getMatrix(classinDict_pert,classinDict_pert)))
+                                  .times(coefmat.getMatrix(classinDict_pert,new int[]{t}));
+                    Matrix two_xt_ATX=((coefmat.getMatrix(classinDict_pert,new int[]{t}).transpose())
                                     .times(2))
-                                    .times(ATXmat.getMatrix(kclassinDict,new int[]{t}));
-                    err[k]=xt_ATA_x.minus(two_xt_ATX).get(0,0);
-                    preddist[k][t]=err[k];
+                                    .times(ATXmat.getMatrix(classinDict_pert,new int[]{t}));
+                    err[nclassindex]=xt_ATA_x.minus(two_xt_ATX).get(0,0);
+                    preddisterr[nclassindex][t]=err[nclassindex];
+                    nclassindex++;
+
                 }
                 int clsindex=0;
                 for(int i=0;i<err.length;i++){
                     if(err[i]<err[clsindex]) clsindex=i;
                 }
-                pred[t]=clsindex;
+                pred[t]=clsarray[clsindex];
             }
+
+//            System.out.println("每个cls每个样本列的类索引：");
+//            for(int i=0;i<kclsinDict.length;i++){
+//                for(int j=0;j<kclsinDict[0].length;j++){
+//                    System.out.print(kclsinDict[i][j]+" ");
+//                }
+//                System.out.println();
+//            }
+
+            Matrix preddictmat= new Matrix(preddisterr);
+            System.out.println("preddisterr：");
+            preddictmat.print(preddictmat.getRowDimension(),preddictmat.getColumnDimension());
+
             return pred;
         }
 
@@ -90,6 +133,7 @@ public class Tools {
         public static double classeval(int[]pred, int[]testlab){
             double OA=0;
             for(int i=0;i<pred.length;i++){
+                   System.out.println("pred标签"+pred[i]+" "+"testlab标签"+testlab[i]);
                    if (pred[i]==testlab[i]) OA+=1.0;
                }
             OA= OA/pred.length*100.0;
