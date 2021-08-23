@@ -174,6 +174,7 @@ public class KSRCNF {
                          test_ijw2D[index++][n]= (int) ijwmat.get(q,p);
                      }
              }
+                 System.out.println("have done the train_ijw2D and test_ijw2D... ");
 
              //all the w(x1,xj) of train_size
              for(int n=0;n<trainidx2D_length;n++){
@@ -197,18 +198,26 @@ public class KSRCNF {
                      testijw2D_weight[windidxab][n]= Tools.kernelcompute(imgheart,imgab,gam_w);
                  }
              }
+                 System.out.println("have done the w(x1,x2)... ");
 
-             //Ktrain_compute
-             for(int p=0;p<trainidx2D_length;p++)
+
+                 //Ktrain_compute
+             for(int p=0;p<trainidx2D_length;p++){
+                 if(p%50==0)System.out.println("have done "+p+" train examples of Ktrain... ");
                  for(int q=0;q<trainidx2D_length;q++){
                      Ktrain[p][q]=Ktrainelecompute(p,q,gam_K);
                  }
+             }
+             System.out.println("have done the Ktrain_compute... ");
 
              //Ktest_compute
-             for(int p=0;p<trainidx2D_length;p++)
+             for(int p=0;p<trainidx2D_length;p++){
+                 if(p%50==0)System.out.println("have done "+p+" train examples of Ktest...");
                  for(int q=0;q<testidx2D_length;q++){
                      Ktest[p][q]=Ktestelecompute(p,q,gam_K);
                  }
+             }
+             System.out.println("have done the Ktest_compute... ");
 
              return new Tuple2<>(Ktrain,Ktest);
          }

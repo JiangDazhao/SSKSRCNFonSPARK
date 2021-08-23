@@ -1,8 +1,9 @@
 import Jama.Matrix;
 import scala.Tuple2;
 
-import javax.tools.Tool;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -18,11 +19,17 @@ public class Main {
         lam=Math.pow(e,-4);
         gam_K=14.904789935208639;//sig
         gam_w=0.742065795512883;//sig0s
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        double t5=System.currentTimeMillis();
         KSRCNF.KSRCNFinit("Indian_pines_corrected.mat",
-                "trainidx.mat",
-                "testidx.mat",
+                "trainidx_300.mat",
+                "testidx_600.mat",
                 "Indian_gt.mat",
                 wind,mu,lam,gam_w,gam_K);
+        double t6=System.currentTimeMillis();
+        System.out.println("readdata time:"+(t6-t5)*1.0/1000+"s");
+        System.out.println(df.format(new Date()));
+
         int []trainidx2D=KSRCNF.trainidx2D;
         int []testidx2D=KSRCNF.testidx2D;
         int []trainlab=KSRCNF.trainlab;
@@ -36,7 +43,7 @@ public class Main {
         Tuple2<double[][],double[][]> ATA_ATX= KSRCNF.ker_lwm();
         double t2=System.currentTimeMillis();
         System.out.println("ker_lwm time:"+(t2-t1)*1.0/1000+"s");
-
+        System.out.println(df.format(new Date()));
 
 //        double [][] Ktrain=ATA_ATX._1;
 //        double [][] Ktest=ATA_ATX._2;
@@ -51,6 +58,8 @@ public class Main {
         Matrix S = Tools.ADMM(ATA_ATX._1,ATA_ATX._2,mu,lam);
         double t4=System.currentTimeMillis();
         System.out.println("ADMM time:"+(t4-t3)*1.0/1000+"s");
+        System.out.println(df.format(new Date()));
+
 //        S.print(S.getRowDimension(),S.getColumnDimension());
 //        double[][] Stoarray= S.getArray();
 //        for(int i=0;i<S.getRowDimension();i++){
@@ -60,8 +69,12 @@ public class Main {
 //            System.out.println();
 //        }
 
+        double t7=System.currentTimeMillis();
         int [] pred;
         pred= Tools.classker_pred(ATA_ATX._1,ATA_ATX._2,S.getArrayCopy(),testlab,trainlab);
+        double t8=System.currentTimeMillis();
+        System.out.println("classker_pred time:"+(t8-t7)*1.0/1000+"s");
+        System.out.println(df.format(new Date()));
 
         double OA;
         OA= Tools.classeval(pred,testlab);

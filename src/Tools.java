@@ -1,5 +1,4 @@
 import Jama.Matrix;
-import com.sun.org.apache.xpath.internal.functions.FuncFalse;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -87,6 +86,8 @@ public class Tools {
                     if(err[i]<err[clsindex]) clsindex=i;
                 }
                 pred[t]=clsarray[clsindex];
+
+                if(t%50==0)System.out.println("have done "+t+" examples of classker_pred");
             }
 
 //            System.out.println("每个cls每个样本列的类索引：");
@@ -121,6 +122,8 @@ public class Tools {
                     S = Finverse.times(ATXmat.plus((vmat.plus(dmat)).times(mu)));
                     vmat = new Matrix(Tools.soft(S.minus(dmat),lam/mu));
                     dmat = dmat.minus(S.minus(vmat));
+
+                    if(iter%100==0)System.out.println("have done "+iter+" iters of ADMM ");
 
                     if(Tools.checkstop(iter,S,S0,tol)){
                         return S;
