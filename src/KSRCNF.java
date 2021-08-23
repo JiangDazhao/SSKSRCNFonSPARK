@@ -311,7 +311,7 @@ public class KSRCNF {
 //    }
 //
 //    public static void main(String[] args) {
-//        double[][] iwreparray= {{1.,1.},{1.,1.},{1.,1.}};
+//        double[][] iwreparray= {{1.,2.},{3.,4.},{5.,6.}};
 //        double[][] jwreparray= {{1.,1.},{1.,1.},{1.,1.}};
 //
 //        Matrix iwrepmat = new Matrix(iwreparray);
@@ -326,6 +326,9 @@ public class KSRCNF {
 //            for(int j=0;j<arraycopy[0].length;j++){
 //                System.out.println(arraycopy[i][j]+" ");
 //            }
+//
+//        Matrix subi= iwrepmat.getMatrix(new int[]{0, 1,2}, new int[]{0});
+//            subi.print(2,2);
 //    }
 
 //    public static void main(String[] args) {

@@ -1,6 +1,9 @@
 import Jama.Matrix;
 import com.sun.org.apache.xpath.internal.functions.FuncFalse;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Tools {
         public static double  kernelcompute(double[] x1,double[] x2,double gam){
             double D=0.;
@@ -18,16 +21,42 @@ public class Tools {
                                              double[][]coef,
                                              int[]test_lab, int[]dict_lab){
             double [] pred= new double[dict_lab.length];
+            double [][]preddist;
+            int nClass;
+            int nTest;
+            Set setdict_lab= new HashSet();
+            for(int i=0;i<dict_lab.length;i++){
+                setdict_lab.add(dict_lab[i]);
+            }
+            nClass=setdict_lab.size();
+            nTest=test_lab.length;
+            preddist=new double[nClass][nTest];
+            for(int t=0;t<nTest;t++){ //each test
+                double[] err= new double[nClass];
 
-
-
-
-
-
-
-
-
-
+                for(int k=0;k<nClass;k++){ //each k is the label class minus 1
+                    int []kclassinDict= new int[dict_lab.length];
+                    for(int i=0;i<kclassinDict.length;i++){
+                        if (dict_lab[i]==k) kclassinDict[i]=1;
+                        else kclassinDict[i]=0;
+                    }
+                    Matrix coefmat= new Matrix(coef);
+                    Matrix ATAmat = new Matrix(ATA);
+                    Matrix ATXmat = new Matrix(ATX);
+                    Matrix xt_ATA_x= ((coefmat.getMatrix(kclassinDict,new int[]{t}).transpose())
+                                  .times(ATAmat.getMatrix(kclassinDict,kclassinDict)))
+                                  .times(coefmat.getMatrix(kclassinDict,new int[]{t}));
+                    Matrix two_xt_ATX=((coefmat.getMatrix(kclassinDict,new int[]{t}).transpose())
+                                    .times(2))
+                                    .times(ATXmat.getMatrix(kclassinDict,new int[]{t}));
+                    err[k]=xt_ATA_x.minus(two_xt_ATX).get(0,0);
+                }
+                int clsindex=0;
+                for(int i=1;i<err.length;i++){
+                    if(err[i]<err[clsindex]) clsindex=i;
+                }
+                pred[t]=clsindex;
+            }
             return pred;
         }
 
