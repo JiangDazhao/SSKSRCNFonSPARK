@@ -17,10 +17,10 @@ public class Tools {
             return K;
         }
 
-        public static double[] classker_pred(double[][]ATA,double[][]ATX,
+        public static int[] classker_pred(double[][]ATA,double[][]ATX,
                                              double[][]coef,
                                              int[]test_lab, int[]dict_lab){
-            double [] pred= new double[dict_lab.length];
+            int [] pred= new int[test_lab.length];
             double [][]preddist;
             int nClass;
             int nTest;
@@ -50,9 +50,10 @@ public class Tools {
                                     .times(2))
                                     .times(ATXmat.getMatrix(kclassinDict,new int[]{t}));
                     err[k]=xt_ATA_x.minus(two_xt_ATX).get(0,0);
+                    preddist[k][t]=err[k];
                 }
                 int clsindex=0;
-                for(int i=1;i<err.length;i++){
+                for(int i=0;i<err.length;i++){
                     if(err[i]<err[clsindex]) clsindex=i;
                 }
                 pred[t]=clsindex;
@@ -86,6 +87,14 @@ public class Tools {
                 return S;
         }
 
+        public static double classeval(int[]pred, int[]testlab){
+            double OA=0;
+            for(int i=0;i<pred.length;i++){
+                   if (pred[i]==testlab[i]) OA+=1.0;
+               }
+            OA= OA/pred.length*100.0;
+            return OA;
+        }
 
         public static double[][] soft(Matrix u, double a){
             int rowsu=u.getRowDimension();

@@ -43,9 +43,12 @@ public class Main {
 
         Matrix S = Tools.ADMM(ATA_ATX._1,ATA_ATX._2,mu,lam);
 
-        double[] pred;
+        int [] pred;
         pred= Tools.classker_pred(ATA_ATX._1,ATA_ATX._2,S.getArrayCopy(),testlab,trainlab);
 
+        double OA;
+        OA= Tools.classeval(pred,testlab);
+        System.out.println(OA);
 //        CsvWriter csvWriter = new CsvWriter("./out/Ktrain.csv", ',', Charset.forName("UTF-8"));
 //        int imgrow=Ktrain.length;
 //        int imgcol=Ktrain[0].length;
