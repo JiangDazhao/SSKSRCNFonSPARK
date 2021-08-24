@@ -1,7 +1,9 @@
 import Jama.Matrix;
 import com.csvreader.CsvWriter;
+import org.ujmp.jmatio.ImportMatrixMAT;
 import scala.Tuple2;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -16,28 +18,26 @@ public class Main {
         double gam_K;
 
         wind=5;
-        double e =Math.E;
-        mu=Math.pow(e,-3);
-        lam=Math.pow(e,-4);
-        //gam_K=14.904789935208639;//sig
-        gam_K=40.515419637876920;
-        //gam_w=0.742065795512883;//sig0s
-        gam_w=2.489353418393197e-4;
+        mu=1e-3;
+        lam=1e-4;
+
+        gam_K=0.272990750165721;//sig
+
+        gam_w=2.489353418393197e-04;//sig0s
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         System.out.println("start time:"+df.format(new Date()));
 
         double t5=System.currentTimeMillis();
         KSRCNF.KSRCNFinit("Indian_pines_corrected.mat",
-                "trainidx_540_61.mat",
-                "testidx_450_61.mat",
+                "testidx_450_61.mat.mat",
+                "trainidx_540_61.mat.mat",
                 "Indian_gt.mat",
                 wind,mu,lam,gam_w,gam_K);
         double t6=System.currentTimeMillis();
         System.out.println("readdata time:"+(t6-t5)*1.0/1000+"s");
         System.out.println(df.format(new Date()));
 
-        int []trainidx2D=KSRCNF.trainidx2D;
-        int []testidx2D=KSRCNF.testidx2D;
+
         int []trainlab=KSRCNF.trainlab;
         int []testlab=KSRCNF.testlab;
        // for(int i=0;i<trainlab.length;i++) System.out.println(trainlab[i]);
@@ -54,16 +54,9 @@ public class Main {
         double [][] Ktrain=ATA_ATX._1;
         double [][] Ktest=ATA_ATX._2;
 
-        int[] trainidx2Da=KSRCNF.trainidx2D;
-          int[][] trainposa=KSRCNF.trainpos;
-          int[] trainijw_sizea=KSRCNF.trainijw_size;
-          double[][]trainijw2D_weighta=KSRCNF.trainijw2D_weight;
-          int[][]train_ijw2Da=KSRCNF.train_ijw2D;
-        double[][]testijw2D_weighta=KSRCNF.testijw2D_weight;
-        int[][]test_ijw2Da=KSRCNF.test_ijw2D;
 
         double t3=System.currentTimeMillis();
-        Matrix S = Tools.ADMM(ATA_ATX._1,ATA_ATX._2,mu,lam);
+        Matrix S = Tools.ADMM(Ktrain,Ktest,mu,lam);
         double t4=System.currentTimeMillis();
         System.out.println("ADMM time:"+(t4-t3)*1.0/1000+"s");
         System.out.println(df.format(new Date()));
@@ -71,7 +64,7 @@ public class Main {
 
         double t7=System.currentTimeMillis();
         int [] pred;
-        pred= Tools.classker_pred(ATA_ATX._1,ATA_ATX._2,S.getArrayCopy(),testlab,trainlab);
+        pred= Tools.classker_pred(Ktrain,Ktest,S.getArrayCopy(),testlab,trainlab);
         double t8=System.currentTimeMillis();
         System.out.println("classker_pred time:"+(t8-t7)*1.0/1000+"s");
         System.out.println(df.format(new Date()));
@@ -106,53 +99,6 @@ public class Main {
         }
         csvWriter.close();
 
-        csvWriter = new CsvWriter("./out/trainijw2D_weighta.csv", ',', Charset.forName("UTF-8"));
-        imgrow=trainijw2D_weighta.length;
-        imgcol=trainijw2D_weighta[0].length;
-        for(int i=0;i<imgrow;i++){
-            String[] onerow=new String[imgcol];
-            for(int j=0;j<imgcol;j++){
-                onerow[j]=String.valueOf(trainijw2D_weighta[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/train_ijw2Da.csv", ',', Charset.forName("UTF-8"));
-        imgrow=train_ijw2Da.length;
-        imgcol=train_ijw2Da[0].length;
-        for(int i=0;i<imgrow;i++){
-            String[] onerow=new String[imgcol];
-            for(int j=0;j<imgcol;j++){
-                onerow[j]=String.valueOf(train_ijw2Da[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/testijw2D_weighta.csv", ',', Charset.forName("UTF-8"));
-        imgrow=testijw2D_weighta.length;
-        imgcol=testijw2D_weighta[0].length;
-        for(int i=0;i<imgrow;i++){
-            String[] onerow=new String[imgcol];
-            for(int j=0;j<imgcol;j++){
-                onerow[j]=String.valueOf(testijw2D_weighta[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/test_ijw2Da.csv", ',', Charset.forName("UTF-8"));
-        imgrow=test_ijw2Da.length;
-        imgcol=test_ijw2Da[0].length;
-        for(int i=0;i<imgrow;i++){
-            String[] onerow=new String[imgcol];
-            for(int j=0;j<imgcol;j++){
-                onerow[j]=String.valueOf(test_ijw2Da[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
 
         csvWriter = new CsvWriter("./out/S.csv", ',', Charset.forName("UTF-8"));
         double[][]Sarray= S.getArrayCopy();

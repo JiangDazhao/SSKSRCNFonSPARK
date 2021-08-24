@@ -128,41 +128,4 @@ public class Data {
             }
     }
 
-//    public static void main(String[] args) throws IOException {
-//        Data data= new Data("Indian_pines_corrected.mat","trainidx.mat","testidx.mat");
-//        System.out.println(data.getRows());
-//        System.out.println(data.getCols());
-//        System.out.println(data.getBands());
-
-//    public static void main(String[] args) throws IOException {
-//        Data data= new Data("Indian_pines_corrected.mat","trainidxtest.mat","testidxtest.mat");
-//
-//        CsvWriter csvWriter = new CsvWriter("./out/img2D.csv", ',', Charset.forName("UTF-8"));
-//        int imgrow=data.bands;
-//        int imgcol=data.rows*data.cols;
-//        double img2D[][] = data.img2D;
-//        for(int i=0;i<imgrow;i++){
-//            String[] onerow=new String[imgcol];
-//            for(int j=0;j<imgcol;j++){
-//                onerow[j]=String.valueOf(img2D[i][j]);
-//            }
-//            csvWriter.writeRecord(onerow);
-//        }
-//        csvWriter.close();
-//    }
-
-//        ImportMatrixMAT import_train = new ImportMatrixMAT();
-//        File trainfile = new File("./resources/trainidx.mat");
-//        Matrix matrix_train = import_train.fromFile(trainfile);
-//        long[] train_dim = matrix_train.getSize();
-//        int trainlen = (int) train_dim[1];
-//        trainidx2D = new int[trainlen];
-//        for(int i=0;i<trainlen;i++)
-//        {
-//            trainidx2D[i]= matrix_train.getAsInt(0,i);
-//            System.out.println(trainidx2D[i]);
-//        }
-
-
-//    }
 }
