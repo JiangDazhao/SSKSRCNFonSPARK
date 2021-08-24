@@ -208,7 +208,7 @@ public class KSRCNF {
                  //Ktrain_compute
              for(int p=0;p<trainidx2D_length;p++){
                  if(p%50==0){
-                     System.out.println("have done "+p+" train examples of Ktrain... ");
+                     System.out.println("start to do "+p+" train examples of Ktrain... ");
                      System.out.println(df.format(new Date()));
                  }
                  for(int q=0;q<trainidx2D_length;q++){
@@ -220,7 +220,7 @@ public class KSRCNF {
              //Ktest_compute
              for(int p=0;p<trainidx2D_length;p++){
                  if(p%50==0){
-                     System.out.println("have done "+p+" train examples of Ktest...");
+                     System.out.println("start to do "+p+" train examples of Ktest...");
                      System.out.println(df.format(new Date()));
                  }
                  for(int q=0;q<testidx2D_length;q++){

@@ -22,7 +22,7 @@ public class Main {
         //gam_K=14.904789935208639;//sig
         gam_K=40.515419637876920;
         //gam_w=0.742065795512883;//sig0s
-        gam_w=2.017143967463676;
+        gam_w=2.489353418393197e-4;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         System.out.println("start time:"+df.format(new Date()));
 
@@ -59,6 +59,8 @@ public class Main {
           int[] trainijw_sizea=KSRCNF.trainijw_size;
           double[][]trainijw2D_weighta=KSRCNF.trainijw2D_weight;
           int[][]train_ijw2Da=KSRCNF.train_ijw2D;
+        double[][]testijw2D_weighta=KSRCNF.testijw2D_weight;
+        int[][]test_ijw2Da=KSRCNF.test_ijw2D;
 
         double t3=System.currentTimeMillis();
         Matrix S = Tools.ADMM(ATA_ATX._1,ATA_ATX._2,mu,lam);
@@ -103,7 +105,7 @@ public class Main {
             csvWriter.writeRecord(onerow);
         }
         csvWriter.close();
-//
+
         csvWriter = new CsvWriter("./out/trainijw2D_weighta.csv", ',', Charset.forName("UTF-8"));
         imgrow=trainijw2D_weighta.length;
         imgcol=trainijw2D_weighta[0].length;
@@ -128,6 +130,30 @@ public class Main {
         }
         csvWriter.close();
 
+        csvWriter = new CsvWriter("./out/testijw2D_weighta.csv", ',', Charset.forName("UTF-8"));
+        imgrow=testijw2D_weighta.length;
+        imgcol=testijw2D_weighta[0].length;
+        for(int i=0;i<imgrow;i++){
+            String[] onerow=new String[imgcol];
+            for(int j=0;j<imgcol;j++){
+                onerow[j]=String.valueOf(testijw2D_weighta[i][j]);
+            }
+            csvWriter.writeRecord(onerow);
+        }
+        csvWriter.close();
+
+        csvWriter = new CsvWriter("./out/test_ijw2Da.csv", ',', Charset.forName("UTF-8"));
+        imgrow=test_ijw2Da.length;
+        imgcol=test_ijw2Da[0].length;
+        for(int i=0;i<imgrow;i++){
+            String[] onerow=new String[imgcol];
+            for(int j=0;j<imgcol;j++){
+                onerow[j]=String.valueOf(test_ijw2Da[i][j]);
+            }
+            csvWriter.writeRecord(onerow);
+        }
+        csvWriter.close();
+
         csvWriter = new CsvWriter("./out/S.csv", ',', Charset.forName("UTF-8"));
         double[][]Sarray= S.getArrayCopy();
         imgrow=Sarray.length;
@@ -140,5 +166,19 @@ public class Main {
             csvWriter.writeRecord(onerow);
         }
         csvWriter.close();
+
+        csvWriter = new CsvWriter("./out/predtest.csv", ',', Charset.forName("UTF-8"));
+        int predlen= pred.length;
+        int testlablen=testlab.length;
+        String[] predrow=new String[predlen];
+        for(int i=0;i<predlen;i++) predrow[i]=String.valueOf(pred[i]);
+        csvWriter.writeRecord(predrow);
+        String[] testlabdrow=new String[testlablen];
+        for(int i=0;i<testlablen;i++) testlabdrow[i]=String.valueOf(testlab[i]);
+        csvWriter.writeRecord(testlabdrow);
+
+        csvWriter.close();
+
+
     }
 }
