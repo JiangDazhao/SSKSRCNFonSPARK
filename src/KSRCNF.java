@@ -2,6 +2,8 @@ import Jama.Matrix;
 import scala.Tuple2;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class KSRCNF {
@@ -199,11 +201,16 @@ public class KSRCNF {
                  }
              }
                  System.out.println("have done the w(x1,x2)... ");
+                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                 System.out.println(df.format(new Date()));
 
 
                  //Ktrain_compute
              for(int p=0;p<trainidx2D_length;p++){
-                 if(p%50==0)System.out.println("have done "+p+" train examples of Ktrain... ");
+                 if(p%50==0){
+                     System.out.println("have done "+p+" train examples of Ktrain... ");
+                     System.out.println(df.format(new Date()));
+                 }
                  for(int q=0;q<trainidx2D_length;q++){
                      Ktrain[p][q]=Ktrainelecompute(p,q,gam_K);
                  }
@@ -212,7 +219,10 @@ public class KSRCNF {
 
              //Ktest_compute
              for(int p=0;p<trainidx2D_length;p++){
-                 if(p%50==0)System.out.println("have done "+p+" train examples of Ktest...");
+                 if(p%50==0){
+                     System.out.println("have done "+p+" train examples of Ktest...");
+                     System.out.println(df.format(new Date()));
+                 }
                  for(int q=0;q<testidx2D_length;q++){
                      Ktest[p][q]=Ktestelecompute(p,q,gam_K);
                  }
