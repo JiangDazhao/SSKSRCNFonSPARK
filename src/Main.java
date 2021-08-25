@@ -29,8 +29,8 @@ public class Main {
 
         double t5=System.currentTimeMillis();
         KSRCNF.KSRCNFinit("Indian_pines_corrected.mat",
-                "testidx_450_61.mat",
                 "trainidx_540_61.mat",
+                "testidx_450_61.mat",
                 "Indian_gt.mat",
                 wind,mu,lam,gam_w,gam_K);
         double t6=System.currentTimeMillis();
