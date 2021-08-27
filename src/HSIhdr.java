@@ -103,8 +103,8 @@ public class HSIhdr {
                 '}';
     }
 
-//    public static void main(String[] args) throws IOException {
-//        HSIhdr testhdr = new HSIhdr("hsihdr.hdr","C:\\Users\\27801\\Desktop\\校内科研\\SSKSRCNFonSPARK\\resources\\");
-//        System.out.println(testhdr.toString());
-//    }
+    public static void main(String[] args) throws IOException {
+        HSIhdr testhdr = new HSIhdr("hsihdr.hdr","C:\\Users\\27801\\Desktop\\校内科研\\SSKSRCNFonSPARK\\resources\\");
+        System.out.println(testhdr.toString());
+    }
 }
