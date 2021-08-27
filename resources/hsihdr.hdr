@@ -1,0 +1,15 @@
+ENVI
+description = {
+samples = 145
+lines   = 145
+bands   = 200
+header offset = 0
+file type = ENVI Standard
+data type = 5
+interleave = bip
+sensor type = Unknown
+byte order = 0
+x start = 0
+y start = 0
+wavelength units = Unknown
+}
