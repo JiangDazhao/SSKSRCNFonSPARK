@@ -32,6 +32,7 @@ public class Main {
                 "trainidx_540_61.mat",
                 "testidx_450_61.mat",
                 "Indian_gt.mat",
+                "totalsample_990_61.mat",
                 wind,mu,lam,gam_w,gam_K);
         double t6=System.currentTimeMillis();
         System.out.println("readdata time:"+(t6-t5)*1.0/1000+"s");
