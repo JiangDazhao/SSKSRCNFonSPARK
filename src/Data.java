@@ -15,16 +15,18 @@ public class Data {
       static int [] testidx2D;
       static int [] trainlab;
       static int [] testlab;
-
+      static int [] totalidx2D;
+      static int [] totallab;
 
       static int rows;
       static int cols;
       static int bands;
-    public Data(String sdataset, String strainidx2D, String stestidx2D, String groundtruth) throws IOException {
+    public Data(String sdataset, String strainidx2D, String stestidx2D, String groundtruth,String stotalidx2D) throws IOException {
         //load img data
         String datapathname="./resources/"+sdataset;
         String trainidxpathname="./resources/"+strainidx2D;
         String testidxpathname="./resources/"+stestidx2D;
+        String totalidxpathname="./resources/"+stotalidx2D;
         ImportMatrixMAT testimg = new ImportMatrixMAT();
         File imgfile  = new File(datapathname);
         Matrix Matriximg = testimg.fromFile(imgfile);
@@ -66,6 +68,16 @@ public class Data {
         for(int i=0;i<testlen;i++)
             this.testidx2D[i]= matrix_test.getAsInt(0,i)-1;
 
+        //totalidx2D
+        ImportMatrixMAT import_total= new ImportMatrixMAT();
+        File totalfile = new File(totalidxpathname);
+        Matrix matrix_total = import_total.fromFile(totalfile);
+        long[] total_dim = matrix_total.getSize();
+        int totallen = (int) total_dim[1];
+        this.totalidx2D = new int[totallen];
+        for(int i=0;i<totallen;i++)
+            this.totalidx2D[i]= matrix_total.getAsInt(0,i)-1;
+
         //trainlab
         this.trainlab=new int[trainidx2D.length];
         for(int i=0;i<trainlab.length;i++){
@@ -81,6 +93,15 @@ public class Data {
             int gdcol=testidx2D[i]/cols;
             testlab[i]=img_gt[gdrow][gdcol];
         }
+
+        //totallab
+        this.totallab=new int[totalidx2D.length];
+        for(int i=0;i<totallab.length;i++){
+            int gdrow= totalidx2D[i]%rows;
+            int gdcol=totalidx2D[i]/cols;
+            totallab[i]=img_gt[gdrow][gdcol];
+        }
+
 
         //reshape3d_2d
         this.rawimg2D = new short[bands][rows*cols];
