@@ -169,76 +169,76 @@ public class ByteData {
         for(int i=0;i<testlab.length;i++) totallab[trainidxlen+i]=testlab[i];
 
 
-        //readout test
-        CsvWriter csvWriter = new CsvWriter("./out/rawimg2D.csv", ',', Charset.forName("UTF-8"));
-        for(int i=0;i<bands;i++){
-            String[] onerow=new String[pixel];
-            for(int j=0;j<pixel;j++){
-                onerow[j]=String.valueOf(rawimg2D[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/img2D.csv", ',', Charset.forName("UTF-8"));
-        for(int i=0;i<bands;i++){
-            String[] onerow=new String[pixel];
-            for(int j=0;j<pixel;j++){
-                onerow[j]=String.valueOf(img2D[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/gt.csv", ',', Charset.forName("UTF-8"));
-        for(int i=0;i<rows;i++){
-            String[] onerow=new String[cols];
-            for(int j=0;j<cols;j++){
-                onerow[j]=String.valueOf(img_gt[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/trainidx2D.csv", ',', Charset.forName("UTF-8"));
-        String[] onerow=new String[trainidxlen];
-        for(int i=0;i<trainidxlen;i++){
-            onerow[i]=String.valueOf(trainidx2D[i]);
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/testidx2D.csv", ',', Charset.forName("UTF-8"));
-        onerow=new String[testidxlen];
-        for(int i=0;i<testidxlen;i++){
-            onerow[i]=String.valueOf(testidx2D[i]);
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/trainlab.csv", ',', Charset.forName("UTF-8"));
-        onerow=new String[trainidx2D.length];
-        for(int i=0;i<trainidx2D.length;i++){
-            onerow[i]=String.valueOf(trainlab[i]);
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/testlab.csv", ',', Charset.forName("UTF-8"));
-        onerow=new String[testidx2D.length];
-        for(int i=0;i<testidx2D.length;i++){
-            onerow[i]=String.valueOf(testlab[i]);
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/totallab.csv", ',', Charset.forName("UTF-8"));
-        onerow=new String[totallab.length];
-        for(int i=0;i<totallab.length;i++){
-            onerow[i]=String.valueOf(totallab[i]);
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
+//        //readout test
+//        CsvWriter csvWriter = new CsvWriter("./out/rawimg2D.csv", ',', Charset.forName("UTF-8"));
+//        for(int i=0;i<bands;i++){
+//            String[] onerow=new String[pixel];
+//            for(int j=0;j<pixel;j++){
+//                onerow[j]=String.valueOf(rawimg2D[i][j]);
+//            }
+//            csvWriter.writeRecord(onerow);
+//        }
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/img2D.csv", ',', Charset.forName("UTF-8"));
+//        for(int i=0;i<bands;i++){
+//            String[] onerow=new String[pixel];
+//            for(int j=0;j<pixel;j++){
+//                onerow[j]=String.valueOf(img2D[i][j]);
+//            }
+//            csvWriter.writeRecord(onerow);
+//        }
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/gt.csv", ',', Charset.forName("UTF-8"));
+//        for(int i=0;i<rows;i++){
+//            String[] onerow=new String[cols];
+//            for(int j=0;j<cols;j++){
+//                onerow[j]=String.valueOf(img_gt[i][j]);
+//            }
+//            csvWriter.writeRecord(onerow);
+//        }
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/trainidx2D.csv", ',', Charset.forName("UTF-8"));
+//        String[] onerow=new String[trainidxlen];
+//        for(int i=0;i<trainidxlen;i++){
+//            onerow[i]=String.valueOf(trainidx2D[i]);
+//        }
+//        csvWriter.writeRecord(onerow);
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/testidx2D.csv", ',', Charset.forName("UTF-8"));
+//        onerow=new String[testidxlen];
+//        for(int i=0;i<testidxlen;i++){
+//            onerow[i]=String.valueOf(testidx2D[i]);
+//        }
+//        csvWriter.writeRecord(onerow);
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/trainlab.csv", ',', Charset.forName("UTF-8"));
+//        onerow=new String[trainidx2D.length];
+//        for(int i=0;i<trainidx2D.length;i++){
+//            onerow[i]=String.valueOf(trainlab[i]);
+//        }
+//        csvWriter.writeRecord(onerow);
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/testlab.csv", ',', Charset.forName("UTF-8"));
+//        onerow=new String[testidx2D.length];
+//        for(int i=0;i<testidx2D.length;i++){
+//            onerow[i]=String.valueOf(testlab[i]);
+//        }
+//        csvWriter.writeRecord(onerow);
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/totallab.csv", ',', Charset.forName("UTF-8"));
+//        onerow=new String[totallab.length];
+//        for(int i=0;i<totallab.length;i++){
+//            onerow[i]=String.valueOf(totallab[i]);
+//        }
+//        csvWriter.writeRecord(onerow);
+//        csvWriter.close();
 
     }
 

@@ -1,5 +1,13 @@
-import java.io.*;
-import java.nio.file.Path;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
 
 public class HSIhdr {
     //从hdr头文件中读出来的参数
@@ -22,23 +30,15 @@ public class HSIhdr {
     }
 
     public void ReadInformation() throws IOException {
-//        /*客户端读取HDFS数据*/
-//        //返回实例文件系统HDFS的fs
-//        Configuration conf = new Configuration();
-//        FileSystem fs = FileSystem.get(URI.create(this.path + this.name), conf);
-//        //有了fs实例后，调用open来获取文件输入流din
-//        DataInputStream din = fs.open(new Path(this.path + this.name));
-//        //客户端对输入流调用read方法
-//        BufferedReader read = new BufferedReader(new InputStreamReader(din));
-
-        File src = new File(this.path + this.name);
-        DataInputStream din =new DataInputStream(
-                new BufferedInputStream(
-                        new FileInputStream(src)
-                )
-        );
-
+        /*客户端读取HDFS数据*/
+        //返回实例文件系统HDFS的fs
+        Configuration conf = new Configuration();
+        FileSystem fs = FileSystem.get(URI.create(this.path + this.name), conf);
+        //有了fs实例后，调用open来获取文件输入流din
+        DataInputStream din = fs.open(new Path(this.path + this.name));
+        //客户端对输入流调用read方法
         BufferedReader read = new BufferedReader(new InputStreamReader(din));
+
 
         String strline;
         try {
