@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class Data {
       static short [][] rawimg2D;
       static double [][] img2D;
-      static double [][][] img3D;
+     // static double [][][] img3D;
       static int [][] img_gt;
       static int [] trainidx2D;
       static int [] testidx2D;
@@ -120,9 +120,7 @@ public class Data {
                 sortX[i*rawimg2D[0].length+j]=rawimg2D[i][j];
             }
         Arrays.sort(sortX);
-       // System.out.println(Arrays.toString(sortX));
         int sortXL=sortX.length;
-     //   System.out.println(sortXL);
         double rdown = 0.001;
         double rup = 0.999;
         double lmin= sortX[Math.max((int)Math.ceil(sortXL*rdown),1)];
@@ -139,14 +137,14 @@ public class Data {
                 img2D[i][j]=(rawimg2D[i][j]-lmin)/lmax;
             }
 
-        this.img3D=new double[rows][cols][bands];
-        for (int i=0;i<bands;i++)
-            for(int j=0;j<rows*cols;j++)
-            {
-                int rowth= j%rows;
-                int colth= j/rows;
-                img3D[rowth][colth][i]=img2D[i][j];
-            }
+//        this.img3D=new double[rows][cols][bands];
+//        for (int i=0;i<bands;i++)
+//            for(int j=0;j<rows*cols;j++)
+//            {
+//                int rowth= j%rows;
+//                int colth= j/rows;
+//                img3D[rowth][colth][i]=img2D[i][j];
+//            }
     }
 
 }

@@ -14,8 +14,7 @@ public class HSIhdr {
     //默认构造函数,标识文件名和路径,以及对头文件参数进行读取
     public HSIhdr(String filename, String path) throws IOException {
         //文件分割,分出文件名
-        String[] t = filename.split("\\.");
-        this.name = t[0] + ".hdr";//头文件.hdr组装
+        this.name = filename + "_hsihdr.hdr";//头文件.hdr组装
 
         this.path = path;// 文件所在目录路径
 
@@ -103,8 +102,4 @@ public class HSIhdr {
                 '}';
     }
 
-    public static void main(String[] args) throws IOException {
-        HSIhdr testhdr = new HSIhdr("hsihdr.hdr","C:\\Users\\27801\\Desktop\\校内科研\\SSKSRCNFonSPARK\\resources\\");
-        System.out.println(testhdr.toString());
-    }
 }

@@ -7,7 +7,7 @@ public class ReadByte {
 
     public static void main(String[] args) throws IOException {
         byte[] data = null;
-        File src = new File("C:\\Users\\27801\\Desktop\\校内科研\\SSKSRCNFonSPARK\\resources\\Indian_pines_corrected");
+        File src = new File("C:\\Users\\27801\\Desktop\\校内科研\\SSKSRCNFonSPARK\\resources\\SSKSRCNF_img");
 //        DataInputStream din =new DataInputStream(
 //                new BufferedInputStream(
 //                        new FileInputStream(src)
@@ -22,10 +22,8 @@ public class ReadByte {
             data[i]= (byte) is.read();
         }
         int bands=200;
-        int row=145;
-        int col=145;
         int datasize=2;
-        int len=col*row;
+        int len;
         len=data.length;
         int pixel=len/(datasize*bands);
 

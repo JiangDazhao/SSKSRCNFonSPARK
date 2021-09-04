@@ -11,9 +11,9 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <scala.version>2.10.6</scala.version>
-        <spark.version>1.6.2</spark.version>
-        <hadoop.version>2.6.4</hadoop.version>
+        <scala.version>2.11.0</scala.version>
+        <spark.version>2.1.0</spark.version>
+        <hadoop.version>2.10.1</hadoop.version>
         <encoding>UTF-8</encoding>
     </properties>
 
@@ -53,11 +53,13 @@
             <version>${scala.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.10</artifactId>
+            <artifactId>spark-core_2.11</artifactId>
             <version>${spark.version}</version>
         </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-common -->
         <dependency>
