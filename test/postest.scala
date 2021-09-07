@@ -6,7 +6,7 @@ object postest {
     val conf= new SparkConf()
       .setAppName("JavaParallelTest")
       .setMaster("local")
-
+      .set("spark.testing.memory", "2147480000")
     val sc=new SparkContext(conf)
 
 
@@ -38,8 +38,8 @@ object postest {
       (prosumpos)
     }
     )
-    for (i<-0 to 3){
-      for(j<-0 to 2){
+    for (i<-0 to 11){
+      for(j<-0 to 1){
         print(pos(i)(j)+" ")
       }
       println()
