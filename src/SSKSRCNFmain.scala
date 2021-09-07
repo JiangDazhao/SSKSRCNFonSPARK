@@ -31,6 +31,28 @@ object SSKSRCNFmain {
 
     // initialize img,img_gt,train,test,total info
     val alldata = new ByteData(jobname,filepath,bands,row,col,datatype)
+    val bdata=spark.broadcast((alldata.getImg2D))
+
+    //partition the totalidx
+    val totalpath=filepath+jobname+"_total"
+    val totalblockbyte=spark.newAPIHadoopFile(totalpath,classOf[DataInputFormat],classOf[Integer],classOf[Array[Byte]])
+
+    val totalblockidx
+      =totalblockbyte.map(pair=>{
+        val key=pair._1/2
+        val blockidx=Tools.Bytetoidx(pair._2,2)
+        (key,blockidx)
+    }
+    ).cache()
+
+    //parallel the pos calculation
+    val posclass=new PosCal(totalblockidx,bdata,header)
+    val pos = posclass.getpos
+
+
+
+
+
   }
 }
 

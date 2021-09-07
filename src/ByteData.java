@@ -1,17 +1,14 @@
 import java.io.IOException;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import com.csvreader.CsvWriter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+
+import javax.tools.Tool;
 
 public class ByteData {
     private int bands;
@@ -25,9 +22,9 @@ public class ByteData {
     private short[][] img_gt;
     private short []trainidx2D;
     private short []testidx2D;
-    private int []trainlab;
-    private int []testlab;
-    private int [] totallab;
+    private short []trainlab;
+    private short []testlab;
+    private short [] totallab;
 
     public ByteData(String mainfilename, String filepath,int bands,int rows,int cols,short datatype) throws IOException {
 
@@ -116,7 +113,6 @@ public class ByteData {
         }
 
         //get trainidx2D
-        int trainidxlen;
         fs = FileSystem.get(URI.create(trainidxadd), conf);
         is = fs.open(new Path(trainidxadd));
         size= is.available();
@@ -124,15 +120,10 @@ public class ByteData {
         for(int i=0;i<size;i++){
             data[i]= (byte) is.read();
         }
-        len=data.length;
-        trainidxlen=len/datatype;
-        trainidx2D=new short[trainidxlen];
-        n=0;
-        for (int i=0;i<trainidxlen;i++)
-            trainidx2D[i]=(short)((data[n++]&0xff) | (data[n++] <<8));
+        short[]trainidx2D;
+        trainidx2D= Tools.Bytetoidx(data,2);
 
         //get testidx2D
-        int testidxlen;
         fs = FileSystem.get(URI.create(testidxadd), conf);
         is = fs.open(new Path(testidxadd));
         size= is.available();
@@ -140,15 +131,12 @@ public class ByteData {
         for(int i=0;i<size;i++){
             data[i]= (byte) is.read();
         }
-        len=data.length;
-        testidxlen=len/datatype;
-        testidx2D=new short[testidxlen];
-        n=0;
-        for (int i=0;i<testidxlen;i++)
-            testidx2D[i]=(short)((data[n++]&0xff) | (data[n++] <<8));
+        short[]testidx2D;
+        testidx2D= Tools.Bytetoidx(data,2);
+
 
         //trainlab
-        this.trainlab=new int[trainidx2D.length];
+        this.trainlab=new short[trainidx2D.length];
         for(int i=0;i<trainlab.length;i++){
             int gdrow= trainidx2D[i]%rows;
             int gdcol=trainidx2D[i]/cols;
@@ -156,7 +144,7 @@ public class ByteData {
         }
 
         //testlab
-        this.testlab=new int[testidx2D.length];
+        this.testlab=new short[testidx2D.length];
         for(int i=0;i<testlab.length;i++){
             int gdrow= testidx2D[i]%rows;
             int gdcol=testidx2D[i]/cols;
@@ -164,9 +152,9 @@ public class ByteData {
         }
 
         //totallab
-        this.totallab=new int[trainidx2D.length+testidx2D.length];
+        this.totallab=new short[trainidx2D.length+testidx2D.length];
         for(int i=0;i<trainlab.length;i++) totallab[i]=trainlab[i];
-        for(int i=0;i<testlab.length;i++) totallab[trainidxlen+i]=testlab[i];
+        for(int i=0;i<testlab.length;i++) totallab[trainidx2D.length+i]=testlab[i];
 
 
 //        //readout test
@@ -262,15 +250,15 @@ public class ByteData {
         return testidx2D;
     }
 
-    public int[] getTrainlab() {
+    public short[] getTrainlab() {
         return trainlab;
     }
 
-    public int[] getTestlab() {
+    public short[] getTestlab() {
         return testlab;
     }
 
-    public int[] getTotallab() {
+    public short[] getTotallab() {
         return totallab;
     }
 

@@ -167,6 +167,35 @@ public class Tools {
         return stop;
     }
 
+    public static short[] Bytetoidx(byte[]data,int datatype){
+        int len=data.length;
+        int idxlen=len/datatype;
+        short[]result=new short[idxlen];
+        int n=0;
+        for (int i=0;i<idxlen;i++)
+            result[i]=(short)((data[n++]&0xff) | (data[n++] <<8));
+        return result;
+    }
+
+    public static int[][] blockPosCal(short[]idx,int rows){
+        int [][]blockpos=new int[idx.length][2];
+        for(int i=0;i<idx.length;i++){
+            int rowth2to3=idx[i]%rows;
+            int colth2to3=idx[i]/rows;
+            blockpos[i][0]=rowth2to3;
+            blockpos[i][1]=colth2to3;
+        }
+        return blockpos;
+    }
+
+
+
+
+
+
+
+
+
 
 
 //    public static void main(String[] args) {
