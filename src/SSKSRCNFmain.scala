@@ -1,3 +1,6 @@
+import java.nio.charset.Charset
+
+import com.csvreader.CsvWriter
 import org.apache.spark.{SparkConf, SparkContext}
 
 
@@ -49,9 +52,16 @@ object SSKSRCNFmain {
     val posclass=new PosCal(totalblockidx,bdata,header)
     val pos = posclass.getpos
 
+    val csvWriter = new CsvWriter("./out/sparkpos.csv", ',', Charset.forName("UTF-8"));
 
-
-
+    for(i<-0 to pos.length){
+      var onerow=new Array[String](2)
+      for(j<-0 to 1) {
+        onerow(j)=String.valueOf(pos(i)(j))
+      };
+      csvWriter.writeRecord(onerow);
+    }
+    csvWriter.close();
 
   }
 }
