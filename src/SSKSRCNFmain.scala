@@ -73,9 +73,9 @@ object SSKSRCNFmain {
     val totalijw2Dsize: Array[Int] =totalijw2Dclass.getTotalijw2DSize
 
     var csvWriter = new CsvWriter("./out/sparktotalijw2D.csv", ',', Charset.forName("UTF-8"));
-    for(i<-0 to totalijw2D.length){
+    for(i<-0 until totalijw2D.length){
       var onerow=new Array[String](totalijw2D(0).length)
-      for(j<-0 to onerow.length) {
+      for(j<-0 until onerow.length) {
         onerow(j)=String.valueOf(totalijw2D(i)(j))
       };
       csvWriter.writeRecord(onerow);
@@ -84,7 +84,7 @@ object SSKSRCNFmain {
 
     csvWriter = new CsvWriter("./out/totalijw2Dsize.csv", ',', Charset.forName("UTF-8"));
     var onerow=new Array[String](totalijw2Dsize.length)
-    for(i<-0 to onerow.length) onerow(i)=String.valueOf(totalijw2Dsize(i));
+    for(i<-0 until onerow.length) onerow(i)=String.valueOf(totalijw2Dsize(i));
     csvWriter.writeRecord(onerow);
 
 

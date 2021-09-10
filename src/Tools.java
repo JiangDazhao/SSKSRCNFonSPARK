@@ -173,7 +173,7 @@ public class Tools {
         short[]result=new short[idxlen];
         int n=0;
         for (int i=0;i<idxlen;i++)
-            result[i]=(short)((data[n++]&0xff) | (data[n++] <<8));
+            result[i]=(short)((data[n++]&0xff) | (data[n++] <<8)-1);
         return result;
     }
 

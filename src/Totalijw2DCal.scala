@@ -3,7 +3,7 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 
 
-class Totalijw2DCal(val totalblockidx:RDD[(Int,Array[Short])],val broadpos:Broadcast[Array[Array[Int]]] ,header:HSIhdr,val wind:Int) {
+class Totalijw2DCal(val totalblockidx:RDD[(Int,Array[Short])],val broadpos:Broadcast[Array[Array[Int]]] ,header:HSIhdr,val wind:Int) extends Serializable {
   private var totalijw2DTuple:(Array[Array[Int]],Array[Int])=_ //(totalijw2D,totalijw2Dsize)
   private val rownum=header.getRow
   private val colnum=header.getCol

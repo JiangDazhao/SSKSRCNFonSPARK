@@ -1,7 +1,9 @@
 import Jama.Matrix;
+import com.csvreader.CsvWriter;
 import scala.Tuple2;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -60,7 +62,7 @@ public class KSRCNF {
     static int testidx2D_length;
     static int totalidx2D_length;
 
-     public static Tuple2<double[][],double[][]> ker_lwm( ){
+     public static Tuple2<double[][],double[][]> ker_lwm( ) throws IOException {
 
          SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
          nwind= (2*wind+1)*(2*wind+1);
@@ -83,6 +85,19 @@ public class KSRCNF {
              totalpos[i][0]=rowth2to3;
              totalpos[i][1]=colth2to3;
          }
+         /////////
+         CsvWriter csvWriter = new CsvWriter("./out/totalpos.csv", ',', Charset.forName("UTF-8"));
+         int totalposrow=totalpos.length;
+         int totalposcol=totalpos[0].length;
+         for(int i=0;i<totalposrow;i++){
+             String[] onerow=new String[totalposcol];
+             for(int j=0;j<totalposcol;j++){
+                 onerow[j]=String.valueOf(totalpos[i][j]);
+             }
+             csvWriter.writeRecord(onerow);
+         }
+         csvWriter.close();
+         ////////
          System.out.println("have done the totalpos.... ");
          System.out.println(df.format(new Date()));
 
@@ -129,6 +144,30 @@ public class KSRCNF {
                    total_ijw2D[index++][n]= (int) ijwmat.get(q,p);//match
                 }
          }
+
+         //////////////////
+         csvWriter = new CsvWriter("./out/totalijw2D.csv", ',', Charset.forName("UTF-8"));
+         int ijw2drow=total_ijw2D.length;
+         int ijw2dcol=total_ijw2D[0].length;
+         for(int i=0;i<ijw2drow;i++){
+             String[] onerow=new String[ijw2dcol];
+             for(int j=0;j<ijw2dcol;j++){
+                 onerow[j]=String.valueOf(total_ijw2D[i][j]);
+             }
+             csvWriter.writeRecord(onerow);
+         }
+         csvWriter.close();
+
+         csvWriter = new CsvWriter("./out/totalijw2Dsize.csv", ',', Charset.forName("UTF-8"));
+         int ijw2dsizerow=totalijw_size.length;
+         String[] onerow=new String[ijw2dsizerow];
+         for(int j=0;j<ijw2dsizerow;j++){
+             onerow[j]=String.valueOf(totalijw_size[j]);
+         }
+         csvWriter.writeRecord(onerow);
+         csvWriter.close();
+         //////////////////
+
          System.out.println("have done the totalijw2D.... ");
          System.out.println(df.format(new Date()));
 
@@ -143,6 +182,21 @@ public class KSRCNF {
                  //if(n==1) System.out.println(trainijw2D_weight[windidxab][n]);
              }
          }
+
+         //////////////////
+         csvWriter = new CsvWriter("./out/totalijw2D_weight.csv", ',', Charset.forName("UTF-8"));
+         int weightrow=totalijw2D_weight.length;
+         int weightcol=totalijw2D_weight[0].length;
+         for(int i=0;i<weightrow;i++){
+             String[] d=new String[weightcol];
+             for(int j=0;j<weightcol;j++){
+                 onerow[j]=String.valueOf(totalijw2D_weight[i][j]);
+             }
+             csvWriter.writeRecord(d);
+         }
+         csvWriter.close();
+         /////////////////
+
          System.out.println("have done the w(x1,x2)... ");
          System.out.println(df.format(new Date()));
 
