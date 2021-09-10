@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import scala.Tuple2;
 
+import javax.tools.Tool;
+
 public class Tools {
 
     public static double  kernelcompute(double[] x1,double[] x2,double gam){
@@ -172,8 +174,10 @@ public class Tools {
         int idxlen=len/datatype;
         short[]result=new short[idxlen];
         int n=0;
-        for (int i=0;i<idxlen;i++)
-            result[i]=(short)((data[n++]&0xff) | (data[n++] <<8)-1);
+        for (int i=0;i<idxlen;i++){
+            result[i]=(short)((data[n++]&0xff) | (data[n++] <<8));
+            result[i]-=1;
+        }
         return result;
     }
 
@@ -238,7 +242,28 @@ public class Tools {
         return new Tuple2<>(blockijw,blockijwsize);
     }
 
+    public static double[] img2Didx_pixel(int index,int bands,double[][]img2D){
+        double[]pixel;
+        pixel= new double[bands];
+        for(int i=0;i<bands;i++){
+            pixel[i]=img2D[i][index];
+        }
+        return pixel;
+    }
 
-
+    public static double[][] blockijw2dWeightCal(short[]blockidx,int[][]total_ijw2D,int[]totalijw_size,
+                                                 double[][]img2D,int offset,int bands,double gam_w,int wind){
+        double[][]blockijw2D_weight=new double[(2*wind+1)*(2*wind+1)][blockidx.length];
+        for(int n=0;n<blockidx.length;n++){
+            int img2Didxheart= blockidx[n];
+            double []imgheart= Tools.img2Didx_pixel(img2Didxheart,bands,img2D);
+            for(int windidxab=0;windidxab<totalijw_size[offset+n];windidxab++){
+                int img2Didxab= total_ijw2D[windidxab][n];
+                double []imgab= Tools.img2Didx_pixel(img2Didxab,bands,img2D);
+                blockijw2D_weight[windidxab][n]= Tools.kernelcompute(imgheart,imgab,gam_w);
+            }
+        }
+        return blockijw2D_weight;
+    }
 }
 

@@ -43,7 +43,7 @@ object SSKSRCNFmain {
     // initialize img,img_gt,train,test,total info
     val alldata = new ByteData(jobname,filepath,bands,row,col,datatype)
     //broadcast img2D
-    val broaddata=spark.broadcast((alldata.getImg2D))
+    val broadimg2D: Broadcast[Array[Array[Double]]] =spark.broadcast((alldata.getImg2D))
 
     //partition the totalblockbyteRDD
     val totalpath=filepath+jobname+"_total"
@@ -57,6 +57,7 @@ object SSKSRCNFmain {
         (key,blockidx)
     }
     ).cache()
+
 
     //parallel the pos calculation
     val posclass=new PosCal(totalblockidxRDD,header)
@@ -72,21 +73,44 @@ object SSKSRCNFmain {
     val totalijw2D: Array[Array[Int]] =totalijw2Dclass.getTotalijw2D
     val totalijw2Dsize: Array[Int] =totalijw2Dclass.getTotalijw2DSize
 
-    var csvWriter = new CsvWriter("./out/sparktotalijw2D.csv", ',', Charset.forName("UTF-8"));
-    for(i<-0 until totalijw2D.length){
-      var onerow=new Array[String](totalijw2D(0).length)
+
+    //broadcast ijw2D ijw2Dsize
+    val broadijw2D: Broadcast[Array[Array[Int]]]=spark.broadcast(totalijw2D)
+    val broadijw2Dsize:Broadcast[Array[Int]]=spark.broadcast(totalijw2Dsize)
+
+    //parallel the totalijw2Dweight
+    val totalijw2DweightClass= new IjwWeightCal(totalblockidxRDD,broadijw2D,broadijw2Dsize,
+      broadimg2D,header,wind,gam_w)
+    totalijw2DweightClass.process()
+    val totalijw2Dweight: Array[Array[Double]] =totalijw2DweightClass.getIjw2dWeight
+    var csvWriter = new CsvWriter("./out/sparktotalijw2Dweight.csv", ',', Charset.forName("UTF-8"));
+    for(i<-0 until totalijw2Dweight.length){
+      var onerow=new Array[String](totalijw2Dweight(0).length)
       for(j<-0 until onerow.length) {
-        onerow(j)=String.valueOf(totalijw2D(i)(j))
+        onerow(j)=String.valueOf(totalijw2Dweight(i)(j))
       };
       csvWriter.writeRecord(onerow);
     }
     csvWriter.close();
+    
 
-    csvWriter = new CsvWriter("./out/totalijw2Dsize.csv", ',', Charset.forName("UTF-8"));
-    var onerow=new Array[String](totalijw2Dsize.length)
-    for(i<-0 until onerow.length) onerow(i)=String.valueOf(totalijw2Dsize(i));
-    csvWriter.writeRecord(onerow);
 
+
+//    var csvWriter = new CsvWriter("./out/sparktotalijw2D.csv", ',', Charset.forName("UTF-8"));
+//    for(i<-0 until totalijw2D.length){
+//      var onerow=new Array[String](totalijw2D(0).length)
+//      for(j<-0 until onerow.length) {
+//        onerow(j)=String.valueOf(totalijw2D(i)(j))
+//      };
+//      csvWriter.writeRecord(onerow);
+//    }
+//    csvWriter.close();
+//
+//    csvWriter = new CsvWriter("./out/totalijw2Dsize.csv", ',', Charset.forName("UTF-8"));
+//    var onerow=new Array[String](totalijw2Dsize.length)
+//    for(i<-0 until onerow.length) onerow(i)=String.valueOf(totalijw2Dsize(i));
+//    csvWriter.writeRecord(onerow);
+//      csvWriter.close();
 
   }
 }

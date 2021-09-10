@@ -145,28 +145,28 @@ public class KSRCNF {
                 }
          }
 
-         //////////////////
-         csvWriter = new CsvWriter("./out/totalijw2D.csv", ',', Charset.forName("UTF-8"));
-         int ijw2drow=total_ijw2D.length;
-         int ijw2dcol=total_ijw2D[0].length;
-         for(int i=0;i<ijw2drow;i++){
-             String[] onerow=new String[ijw2dcol];
-             for(int j=0;j<ijw2dcol;j++){
-                 onerow[j]=String.valueOf(total_ijw2D[i][j]);
-             }
-             csvWriter.writeRecord(onerow);
-         }
-         csvWriter.close();
-
-         csvWriter = new CsvWriter("./out/totalijw2Dsize.csv", ',', Charset.forName("UTF-8"));
-         int ijw2dsizerow=totalijw_size.length;
-         String[] onerow=new String[ijw2dsizerow];
-         for(int j=0;j<ijw2dsizerow;j++){
-             onerow[j]=String.valueOf(totalijw_size[j]);
-         }
-         csvWriter.writeRecord(onerow);
-         csvWriter.close();
-         //////////////////
+//         //////////////////
+//         csvWriter = new CsvWriter("./out/totalijw2D.csv", ',', Charset.forName("UTF-8"));
+//         int ijw2drow=total_ijw2D.length;
+//         int ijw2dcol=total_ijw2D[0].length;
+//         for(int i=0;i<ijw2drow;i++){
+//             String[] onerow=new String[ijw2dcol];
+//             for(int j=0;j<ijw2dcol;j++){
+//                 onerow[j]=String.valueOf(total_ijw2D[i][j]);
+//             }
+//             csvWriter.writeRecord(onerow);
+//         }
+//         csvWriter.close();
+//
+//         csvWriter = new CsvWriter("./out/totalijw2Dsize.csv", ',', Charset.forName("UTF-8"));
+//         int ijw2dsizerow=totalijw_size.length;
+//         String[] onerow=new String[ijw2dsizerow];
+//         for(int j=0;j<ijw2dsizerow;j++){
+//             onerow[j]=String.valueOf(totalijw_size[j]);
+//         }
+//         csvWriter.writeRecord(onerow);
+//         csvWriter.close();
+//         //////////////////
 
          System.out.println("have done the totalijw2D.... ");
          System.out.println(df.format(new Date()));
@@ -183,19 +183,19 @@ public class KSRCNF {
              }
          }
 
-         //////////////////
-         csvWriter = new CsvWriter("./out/totalijw2D_weight.csv", ',', Charset.forName("UTF-8"));
-         int weightrow=totalijw2D_weight.length;
-         int weightcol=totalijw2D_weight[0].length;
-         for(int i=0;i<weightrow;i++){
-             String[] d=new String[weightcol];
-             for(int j=0;j<weightcol;j++){
-                 onerow[j]=String.valueOf(totalijw2D_weight[i][j]);
-             }
-             csvWriter.writeRecord(d);
-         }
-         csvWriter.close();
-         /////////////////
+//         //////////////////
+//         csvWriter = new CsvWriter("./out/totalijw2D_weight.csv", ',', Charset.forName("UTF-8"));
+//         int weightrow=totalijw2D_weight.length;
+//         int weightcol=totalijw2D_weight[0].length;
+//         for(int i=0;i<weightrow;i++){
+//             String[] d=new String[weightcol];
+//             for(int j=0;j<weightcol;j++){
+//                 onerow[j]=String.valueOf(totalijw2D_weight[i][j]);
+//             }
+//             csvWriter.writeRecord(d);
+//         }
+//         csvWriter.close();
+//         /////////////////
 
          System.out.println("have done the w(x1,x2)... ");
          System.out.println(df.format(new Date()));
@@ -236,7 +236,6 @@ public class KSRCNF {
              //sumwa;
             for(int i=0;i<totalijw_size[krowth_index];i++)
                 sumwa=sumwa+totalijw2D_weight[i][krowth_index];
-            //System.out.println(sumwa);
 
             //sumwb;
             for(int i=0;i<totalijw_size[kcolth_index];i++)
@@ -252,13 +251,11 @@ public class KSRCNF {
                      double kernelmulwab= kernelK*totalijw2D_weight[a][krowth_index]
                                             *totalijw2D_weight[b][kcolth_index];
                      upresult+=kernelmulwab;
-                    //if(krowth_index==1) System.out.println(kernelK);
 
                  }
              }
              div= sumwa*sumwb;
              result=upresult/div;
-            //System.out.println(upresult);
              return result;
         }
 
