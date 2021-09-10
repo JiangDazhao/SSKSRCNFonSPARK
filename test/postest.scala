@@ -16,28 +16,14 @@ object postest {
         (3,Array(7.toShort,8.toShort,9.toShort)),
         (4,Array(10.toShort,11.toShort,12.toShort))),
       4)
+    val sorttotalblockidxRDD= totalblockidxRDD.sortByKey()
 
-    var pos = Array.ofDim[Int](12, 2)
-    pos=totalblockidxRDD.map(pair=>{
-      val blockidx=pair._2
-      val blockpos = Tools.blockPosCal(blockidx,145)
+    val header= new HSIhdr("SSKSRCNF", "./resources/")
+    val posclass=new PosCal(sorttotalblockidxRDD,header)
+    posclass.process()
+    val pos = posclass.getpos
 
-      (blockpos)
-    }
-    ).reduce((right,left)=>{
-      val problockpos1=right
-      val problockpos2=left
-      val problockpos1_len=problockpos1.length
-      val problockpos2_len=problockpos2.length
-      var prosumpos=Array.ofDim[Int](problockpos1_len+problockpos2_len,2)
-      for (i<- 0 until problockpos1_len)
-        prosumpos(i)= problockpos1(i)
-      for(i<-0 until problockpos2_len)
-        prosumpos(problockpos1_len+i)=problockpos2(i)
 
-      (prosumpos)
-    }
-    )
     for (i<-0 to 11){
       for(j<-0 to 1){
         print(pos(i)(j)+" ")

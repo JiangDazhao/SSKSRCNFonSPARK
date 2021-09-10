@@ -49,11 +49,11 @@ object SSKSRCNFmain {
     ).cache()
 
     //parallel the pos calculation
-    val posclass=new PosCal(totalblockidx,bdata,header)
+    val posclass=new PosCal(totalblockidx,header)
+    posclass.process()
     val pos = posclass.getpos
 
     val csvWriter = new CsvWriter("./out/sparkpos.csv", ',', Charset.forName("UTF-8"));
-
     for(i<-0 to pos.length){
       var onerow=new Array[String](2)
       for(j<-0 to 1) {
