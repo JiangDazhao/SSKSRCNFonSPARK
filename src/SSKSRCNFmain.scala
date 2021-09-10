@@ -1,6 +1,7 @@
 import java.nio.charset.Charset
 
 import com.csvreader.CsvWriter
+import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.{SparkConf, SparkContext}
 
 
@@ -32,16 +33,25 @@ object SSKSRCNFmain {
     val datainter=header.getInter
     val len=col*row
 
+    //static parameter
+    val wind = 5
+    val mu = 1e-3
+    val lam = 1e-4
+    val gam_K = 0.272990750165721 //sig
+    val gam_w = 2.489353418393197e-04 //sig0s
+
     // initialize img,img_gt,train,test,total info
     val alldata = new ByteData(jobname,filepath,bands,row,col,datatype)
-    val bdata=spark.broadcast((alldata.getImg2D))
+    //broadcast img2D
+    val broaddata=spark.broadcast((alldata.getImg2D))
 
-    //partition the totalidx
+    //partition the totalblockbyteRDD
     val totalpath=filepath+jobname+"_total"
-    val totalblockbyte=spark.newAPIHadoopFile(totalpath,classOf[DataInputFormat],classOf[Integer],classOf[Array[Byte]])
+    val totalblockbyteRDD=spark.newAPIHadoopFile(totalpath,classOf[DataInputFormat],classOf[Integer],classOf[Array[Byte]])
 
-    val totalblockidx
-      =totalblockbyte.map(pair=>{
+    //totalblockbyteRDD to totalblockidxRDD
+    val totalblockidxRDD
+      =totalblockbyteRDD.map(pair=>{
         val key=pair._1/2
         val blockidx=Tools.Bytetoidx(pair._2,2)
         (key,blockidx)
@@ -49,19 +59,34 @@ object SSKSRCNFmain {
     ).cache()
 
     //parallel the pos calculation
-    val posclass=new PosCal(totalblockidx,header)
+    val posclass=new PosCal(totalblockidxRDD,header)
     posclass.process()
-    val pos = posclass.getpos
+    val pos: Array[Array[Int]] = posclass.getpos
 
-    val csvWriter = new CsvWriter("./out/sparkpos.csv", ',', Charset.forName("UTF-8"));
-    for(i<-0 to pos.length){
-      var onerow=new Array[String](2)
-      for(j<-0 to 1) {
-        onerow(j)=String.valueOf(pos(i)(j))
+    //broadcast pos
+    val broadpos: Broadcast[Array[Array[Int]]] = spark.broadcast(pos)
+
+    //parallel the totalijw2D and totalijw_size
+    val totalijw2Dclass= new Totalijw2DCal(totalblockidxRDD,broadpos,header,wind)
+    totalijw2Dclass.process()
+    val totalijw2D: Array[Array[Int]] =totalijw2Dclass.getTotalijw2D
+    val totalijw2Dsize: Array[Int] =totalijw2Dclass.getTotalijw2DSize
+
+    var csvWriter = new CsvWriter("./out/sparktotalijw2D.csv", ',', Charset.forName("UTF-8"));
+    for(i<-0 to totalijw2D.length){
+      var onerow=new Array[String](totalijw2D(0).length)
+      for(j<-0 to onerow.length) {
+        onerow(j)=String.valueOf(totalijw2D(i)(j))
       };
       csvWriter.writeRecord(onerow);
     }
     csvWriter.close();
+
+    csvWriter = new CsvWriter("./out/totalijw2Dsize.csv", ',', Charset.forName("UTF-8"));
+    var onerow=new Array[String](totalijw2Dsize.length)
+    for(i<-0 to onerow.length) onerow(i)=String.valueOf(totalijw2Dsize(i));
+    csvWriter.writeRecord(onerow);
+
 
   }
 }

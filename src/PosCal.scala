@@ -1,6 +1,6 @@
 import org.apache.spark.rdd.RDD
 
-class PosCal(val totalblockidx:RDD[(Int,Array[Short])], header:HSIhdr) extends Serializable {
+class PosCal(val totalblockidx:RDD[(Int,Array[Short])],header:HSIhdr) extends Serializable {
   private var pos:Array[Array[Int]]=_
   private val rownum=header.getRow
 

@@ -76,56 +76,68 @@ public class Main {
 
         System.out.println("end time:"+df.format(new Date()));
 
-        CsvWriter csvWriter = new CsvWriter("./out/Ktrain.csv", ',', Charset.forName("UTF-8"));
-        int imgrow=Ktrain.length;
-        int imgcol=Ktrain[0].length;
-        for(int i=0;i<imgrow;i++){
-            String[] onerow=new String[imgcol];
-            for(int j=0;j<imgcol;j++){
-                onerow[j]=String.valueOf(Ktrain[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
+//        CsvWriter csvWriter = new CsvWriter("./out/Ktrain.csv", ',', Charset.forName("UTF-8"));
+//        int imgrow=Ktrain.length;
+//        int imgcol=Ktrain[0].length;
+//        for(int i=0;i<imgrow;i++){
+//            String[] onerow=new String[imgcol];
+//            for(int j=0;j<imgcol;j++){
+//                onerow[j]=String.valueOf(Ktrain[i][j]);
+//            }
+//            csvWriter.writeRecord(onerow);
+//        }
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/Ktest.csv", ',', Charset.forName("UTF-8"));
+//        imgrow=Ktest.length;
+//        imgcol=Ktest[0].length;
+//        for(int i=0;i<imgrow;i++){
+//            String[] onerow=new String[imgcol];
+//            for(int j=0;j<imgcol;j++){
+//                onerow[j]=String.valueOf(Ktest[i][j]);
+//            }
+//            csvWriter.writeRecord(onerow);
+//        }
+//        csvWriter.close();
+//
+//
+//        csvWriter = new CsvWriter("./out/S.csv", ',', Charset.forName("UTF-8"));
+//        double[][]Sarray= S.getArrayCopy();
+//        imgrow=Sarray.length;
+//        imgcol=Sarray[0].length;
+//        for(int i=0;i<imgrow;i++){
+//            String[] onerow=new String[imgcol];
+//            for(int j=0;j<imgcol;j++){
+//                onerow[j]=String.valueOf(Sarray[i][j]);
+//            }
+//            csvWriter.writeRecord(onerow);
+//        }
+//        csvWriter.close();
+//
+//        csvWriter = new CsvWriter("./out/predtest.csv", ',', Charset.forName("UTF-8"));
+//        int predlen= pred.length;
+//        int testlablen=testlab.length;
+//        String[] predrow=new String[predlen];
+//        for(int i=0;i<predlen;i++) predrow[i]=String.valueOf(pred[i]);
+//        csvWriter.writeRecord(predrow);
+//        String[] testlabdrow=new String[testlablen];
+//        for(int i=0;i<testlablen;i++) testlabdrow[i]=String.valueOf(testlab[i]);
+//        csvWriter.writeRecord(testlabdrow);
+//
+//        csvWriter.close();
 
-        csvWriter = new CsvWriter("./out/Ktest.csv", ',', Charset.forName("UTF-8"));
-        imgrow=Ktest.length;
-        imgcol=Ktest[0].length;
-        for(int i=0;i<imgrow;i++){
-            String[] onerow=new String[imgcol];
-            for(int j=0;j<imgcol;j++){
-                onerow[j]=String.valueOf(Ktest[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-
-        csvWriter = new CsvWriter("./out/S.csv", ',', Charset.forName("UTF-8"));
-        double[][]Sarray= S.getArrayCopy();
-        imgrow=Sarray.length;
-        imgcol=Sarray[0].length;
-        for(int i=0;i<imgrow;i++){
-            String[] onerow=new String[imgcol];
-            for(int j=0;j<imgcol;j++){
-                onerow[j]=String.valueOf(Sarray[i][j]);
-            }
-            csvWriter.writeRecord(onerow);
-        }
-        csvWriter.close();
-
-        csvWriter = new CsvWriter("./out/predtest.csv", ',', Charset.forName("UTF-8"));
-        int predlen= pred.length;
-        int testlablen=testlab.length;
-        String[] predrow=new String[predlen];
-        for(int i=0;i<predlen;i++) predrow[i]=String.valueOf(pred[i]);
-        csvWriter.writeRecord(predrow);
-        String[] testlabdrow=new String[testlablen];
-        for(int i=0;i<testlablen;i++) testlabdrow[i]=String.valueOf(testlab[i]);
-        csvWriter.writeRecord(testlabdrow);
-
-        csvWriter.close();
-
+//        int [][]totalpos= KSRCNF.totalpos;
+//        CsvWriter csvWriter = new CsvWriter("./out/totalpos.csv", ',', Charset.forName("UTF-8"));
+//        int posrow=totalpos.length;
+//        int poscol=totalpos[0].length;
+//        for(int i=0;i<posrow;i++){
+//            String[] onerow=new String[poscol];
+//            for(int j=0;j<poscol;j++){
+//                onerow[j]=String.valueOf(totalpos[i][j]);
+//            }
+//            csvWriter.writeRecord(onerow);
+//        }
+//        csvWriter.close();
 
     }
 }

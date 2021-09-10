@@ -1,8 +1,8 @@
 import Jama.Matrix;
 
-import javax.tools.Tool;
 import java.util.HashSet;
 import java.util.Set;
+import scala.Tuple2;
 
 public class Tools {
 
@@ -189,30 +189,56 @@ public class Tools {
     }
 
 
+    public static Tuple2<int[][],int[]> blockIjw2DCal(short[]idx, int[][]pos, int rows, int cols, int wind){
+        int [][]blockijw=new int[(2*wind+1)*(2*wind+1)][idx.length];
+        int []blockijwsize=new int[idx.length];
+        for(int n=0;n<idx.length;n++){
+            int i=pos[n][0];
+            int j=pos[n][1];
+            int iw_begin=Math.max(i-wind,0);
+            int iw_end=Math.min(i+wind,rows-1);
+            int jw_begin=Math.max(j-wind,0);
+            int jw_end=Math.min(j+wind,cols-1);
+            int iw_size= iw_end-iw_begin+1;
+            int jw_size= jw_end-jw_begin+1;
+            blockijwsize[n]=iw_size*jw_size;//match
+
+            double[][] iwarray=new double[1][iw_size];
+            for(int p=0;p<iw_size;p++){
+                iwarray[0][p]=iw_begin+p;
+            }
+            double[][] jwarray=new double[1][jw_size];
+            for(int p=0;p<jw_size;p++){
+                jwarray[0][p]=jw_begin+p;
+            }
+            Matrix iwmat= new Matrix(iwarray);
+            Matrix jwmat= new Matrix(jwarray);
+
+            double[][] iwreparray= new double[iw_size][jw_size];
+            double[][] jwreparray= new double[iw_size][jw_size];
+            for(int p=0;p<jw_size;p++)
+                for(int q=0;q<iw_size;q++){
+                    iwreparray[q][p]=iwarray[0][q];
+                }
+            for(int p=0;p<iw_size;p++)
+                for(int q=0;q<jw_size;q++){
+                    jwreparray[p][q]=jwarray[0][q];
+                }
+            Matrix iwrepmat = new Matrix(iwreparray);
+            Matrix jwrepmat = new Matrix(jwreparray);
+
+            Matrix ijwmat= iwrepmat.plus(jwrepmat.times(rows));
+            int index=0;
+            for(int p=0;p<ijwmat.getColumnDimension();p++)
+                for(int q=0;q<ijwmat.getRowDimension();q++){
+                    blockijw[index++][n]= (int) ijwmat.get(q,p);//match
+                }
+        }
+
+        return new Tuple2<>(blockijw,blockijwsize);
+    }
 
 
 
-
-
-
-
-
-
-//    public static void main(String[] args) {
-////        double[][] iwreparray= {{-1.,-2.},{-3.,-4.},{-5.,6.}};
-////        int a=3;
-////        Matrix iwrepmat = new Matrix(iwreparray);
-////        double [][]result= Tools.soft(iwrepmat,a);
-////        Matrix resultmat= new Matrix(result);
-////        resultmat.print(resultmat.getRowDimension(),resultmat.getColumnDimension());
-////        double normf = iwrepmat.normF();
-////        System.out.println("normf:"+normf);
-////          int t=1;
-////          int []array = new int[]{t};
-////        System.out.println(array[0]);
-////        double[][] iwreparray= {{1.,2.},{3.,4.},{5.,6.}};
-////        Matrix iwrepmat = new Matrix(iwreparray);
-////        Matrix sub = iwrepmat.getMatrix(new int[]{0,1},new int[]{1}).transpose();
-////        sub.print(sub.getRowDimension(),sub.getColumnDimension());
-//    }
 }
+

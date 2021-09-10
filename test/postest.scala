@@ -21,8 +21,7 @@ object postest {
     val header= new HSIhdr("SSKSRCNF", "./resources/")
     val posclass=new PosCal(sorttotalblockidxRDD,header)
     posclass.process()
-    val pos = posclass.getpos
-
+    val pos: Array[Array[Int]] = posclass.getpos
 
     for (i<-0 to 11){
       for(j<-0 to 1){
@@ -30,5 +29,15 @@ object postest {
       }
       println()
     }
+
+    //    val csvWriter = new CsvWriter("./out/sparkpos.csv", ',', Charset.forName("UTF-8"));
+    //    for(i<-0 to pos.length){
+    //      var onerow=new Array[String](2)
+    //      for(j<-0 to 1) {
+    //        onerow(j)=String.valueOf(pos(i)(j))
+    //      };
+    //      csvWriter.writeRecord(onerow);
+    //    }
+    //    csvWriter.close();
   }
 }
