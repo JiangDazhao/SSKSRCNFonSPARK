@@ -1,5 +1,8 @@
 import java.nio.charset.Charset
+import java.text.SimpleDateFormat
+import java.util.Date
 
+import Jama.Matrix
 import com.csvreader.CsvWriter
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.{SparkConf, SparkContext}
@@ -40,10 +43,20 @@ object SSKSRCNFmain {
     val gam_K = 0.272990750165721 //sig
     val gam_w = 2.489353418393197e-04 //sig0s
 
+    //set data format
+    val df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    println("start time:" + df.format(new Date))
+
     // initialize img,img_gt,train,test,total info
     val alldata = new ByteData(jobname,filepath,bands,row,col,datatype)
+
     //broadcast img2D
     val broadimg2D: Broadcast[Array[Array[Double]]] =spark.broadcast((alldata.getImg2D))
+    //broadcast trainidx
+    val broadtrainidx: Broadcast[Array[Short]] =spark.broadcast((alldata.getTrainidx2D))
+
+    val t1 = System.currentTimeMillis
+    println("readdata start time:"+df.format(new Date))
 
     //partition the totalblockbyteRDD
     val totalpath=filepath+jobname+"_total"
@@ -58,6 +71,12 @@ object SSKSRCNFmain {
     }
     ).cache()
 
+    val t2 = System.currentTimeMillis
+    println("readdata end time:"+df.format(new Date))
+    println("readdata time:" + (t2 - t1) * 1.0 / 1000 + "s")
+
+    val t3 = System.currentTimeMillis
+    println("ker_lwm start time:"+df.format(new Date))
 
     //parallel the pos calculation
     val posclass=new PosCal(totalblockidxRDD,header)
@@ -73,7 +92,6 @@ object SSKSRCNFmain {
     val totalijw2D: Array[Array[Int]] =totalijw2Dclass.getTotalijw2D
     val totalijw2Dsize: Array[Int] =totalijw2Dclass.getTotalijw2DSize
 
-
     //broadcast ijw2D ijw2Dsize
     val broadijw2D: Broadcast[Array[Array[Int]]]=spark.broadcast(totalijw2D)
     val broadijw2Dsize:Broadcast[Array[Int]]=spark.broadcast(totalijw2Dsize)
@@ -84,42 +102,18 @@ object SSKSRCNFmain {
     totalijw2DweightClass.process()
     val totalijw2Dweight: Array[Array[Double]] =totalijw2DweightClass.getIjw2dWeight
 
+    //broadcast totalijw2Dweight
+    val broadijw2Dweight: Broadcast[Array[Array[Double]]] =spark.broadcast(totalijw2Dweight)
 
+    //parallel the Ktotal
+    val KtotalClass= new KtotalCal(totalblockidxRDD,broadijw2D,broadijw2Dsize,broadimg2D,
+      broadijw2Dweight,broadtrainidx,header,gam_K)
+    KtotalClass.process()
+    val Ktotal: Array[Array[Double]] =KtotalClass.getKtotal
 
-
-
-
-
-
-
-
-
-    //    var csvWriter = new CsvWriter("./out/sparktotalijw2Dweight.csv", ',', Charset.forName("UTF-8"));
-//    for(i<-0 until totalijw2Dweight.length){
-//      var onerow=new Array[String](totalijw2Dweight(0).length)
-//      for(j<-0 until onerow.length) {
-//        onerow(j)=String.valueOf(totalijw2Dweight(i)(j))
-//      };
-//      csvWriter.writeRecord(onerow);
-//    }
-//    csvWriter.close();
-
-
-//    var csvWriter = new CsvWriter("./out/sparktotalijw2D.csv", ',', Charset.forName("UTF-8"));
-//    for(i<-0 until totalijw2D.length){
-//      var onerow=new Array[String](totalijw2D(0).length)
-//      for(j<-0 until onerow.length) {
-//        onerow(j)=String.valueOf(totalijw2D(i)(j))
-//      };
-//      csvWriter.writeRecord(onerow);
-//    }
-//    csvWriter.close();
-//
-//    csvWriter = new CsvWriter("./out/totalijw2Dsize.csv", ',', Charset.forName("UTF-8"));
-//    var onerow=new Array[String](totalijw2Dsize.length)
-//    for(i<-0 until onerow.length) onerow(i)=String.valueOf(totalijw2Dsize(i));
-//    csvWriter.writeRecord(onerow);
-//      csvWriter.close();
+    val t4 = System.currentTimeMillis
+    println("ker_lwm end time:"+df.format(new Date))
+    println("ker_lwm time:" + (t4 - t3) * 1.0 / 1000 + "s")
 
   }
 }

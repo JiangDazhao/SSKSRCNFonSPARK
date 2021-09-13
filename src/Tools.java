@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import scala.Tuple2;
 
+import javax.security.auth.kerberos.KeyTab;
 import javax.tools.Tool;
 
 public class Tools {
@@ -265,6 +266,51 @@ public class Tools {
             }
         }
         return blockijw2D_weight;
+    }
+
+    //Ktotalelement_compute
+    public static double[][] blockKtotalcal(short[]blockidx,int[][]total_ijw2D,int[]totalijw_size,
+                                            double[][]img2D,double[][] totalijw2D_weight,
+                                            int Ktotalrow,int offset,int bands,double gam_K){
+        double [][]blockKtotal=new double[Ktotalrow][blockidx.length];
+        double [][]upresult=new double[Ktotalrow][blockidx.length];
+        double [][]div=new double[Ktotalrow][blockidx.length];
+        double []sumwa = new double[Ktotalrow];
+        double []sumwb= new double[blockidx.length];
+
+        //sumwa
+        for(int n=0;n<Ktotalrow;n++){
+            for(int i=0;i<totalijw_size[n];i++)
+                sumwa[n]+=totalijw2D_weight[i][n];
+        }
+
+        //sumwb
+        for(int n=0;n<blockidx.length;n++){
+            for(int i=0;i<totalijw_size[offset+n];i++)
+                sumwb[n]+=totalijw2D_weight[i][offset+n];
+        }
+
+        //blockKtotal
+        for(int n=0;n<Ktotalrow;n++){
+            for(int m=0;m<blockidx.length;m++){
+                for(int a=0;a<totalijw_size[n];a++){
+                    for(int b=0;b<totalijw_size[offset+m];b++){
+                        int img2Didxa = total_ijw2D[a][n];
+                        int img2Didxb = total_ijw2D[b][offset+m];
+                        double []imga = Tools.img2Didx_pixel(img2Didxa,bands,img2D);
+                        double []imgb = Tools.img2Didx_pixel(img2Didxb,bands,img2D);
+                        double kernelK= Tools.kernelcompute(imga,imgb,gam_K);
+                        double kernelmulwab= kernelK*totalijw2D_weight[a][n]
+                                *totalijw2D_weight[b][offset+m];
+                        upresult[n][m]+=kernelmulwab;
+                    }
+                }
+                div[n][m]= sumwa[n]*sumwb[m];
+                blockKtotal[n][m]=upresult[n][m]/div[n][m];
+            }
+        }
+
+        return blockKtotal;
     }
 }
 

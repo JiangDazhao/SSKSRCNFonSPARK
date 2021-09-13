@@ -1,14 +1,16 @@
 import java.nio.charset.Charset
+import java.text.SimpleDateFormat
+import java.util.Date
 
 import com.csvreader.CsvWriter
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.{SparkConf, SparkContext}
 
-object HadoopIjw2DWeightTest {
+object HadoopKtotalTest {
   def main(args: Array[String]): Unit = {
     val conf= new SparkConf()
       .setAppName("JavaParallelTest")
-      .setMaster("local")
+      .setMaster("local[*]")
       .set("spark.testing.memory", "2147480000")
     val spark=new SparkContext(conf)
 
@@ -26,6 +28,9 @@ object HadoopIjw2DWeightTest {
     val lam = 1e-4
     val gam_K = 0.272990750165721 //sig
     val gam_w = 2.489353418393197e-04 //sig0s
+    //set data format
+    val df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    println("start time:" + df.format(new Date))
 
     // initialize img,img_gt,train,test,total info
     val alldata = new Data("Indian_pines_corrected.mat",
@@ -34,6 +39,13 @@ object HadoopIjw2DWeightTest {
       "Indian_gt.mat",
       "totalsample_990_61.mat")
     val broadimg2D: Broadcast[Array[Array[Double]]] =spark.broadcast((alldata.getImg2D))
+
+    //broadcast trainidx
+    val inttrainidx2D=alldata.getTrainidx2D
+    val shorttrainidx2D=Array.ofDim[Short](inttrainidx2D.length)
+    for(i<-0 until(inttrainidx2D.length))
+      shorttrainidx2D(i)=inttrainidx2D(i).toShort
+    val broadtrainidx: Broadcast[Array[Short]] =spark.broadcast((shorttrainidx2D))
 
     //partition the totalblockbyteRDD
     val notblockdata=alldata.getTotalidx2D
@@ -54,6 +66,9 @@ object HadoopIjw2DWeightTest {
       4).cache()
     val totalblockidxRDD= notsortblockidxRDD.sortByKey()
 
+    val t3 = System.currentTimeMillis
+    println("ker_lwm start time:"+df.format(new Date))
+
     //parallel the pos calculation
     val posclass=new PosCal(totalblockidxRDD,header)
     posclass.process()
@@ -68,7 +83,6 @@ object HadoopIjw2DWeightTest {
     val totalijw2D: Array[Array[Int]] =totalijw2Dclass.getTotalijw2D
     val totalijw2Dsize: Array[Int] =totalijw2Dclass.getTotalijw2DSize
 
-
     //broadcast ijw2D ijw2Dsize
     val broadijw2D: Broadcast[Array[Array[Int]]]=spark.broadcast(totalijw2D)
     val broadijw2Dsize:Broadcast[Array[Int]]=spark.broadcast(totalijw2Dsize)
@@ -79,33 +93,29 @@ object HadoopIjw2DWeightTest {
     totalijw2DweightClass.process()
     val totalijw2Dweight: Array[Array[Double]] =totalijw2DweightClass.getIjw2dWeight
 
-//    //putout
-//    var csvWriter = new CsvWriter("./out/hadoopijw2D.csv", ',', Charset.forName("UTF-8"));
-//    for(i<-0 until totalijw2D.length){
-//      var onerow=new Array[String](totalijw2D(0).length)
-//      for(j<-0 until onerow.length) {
-//        onerow(j)=String.valueOf(totalijw2D(i)(j))
-//      };
-//      csvWriter.writeRecord(onerow);
-//    }
-//    csvWriter.close();
-//
-//    csvWriter = new CsvWriter("./out/hadoopijw2Dsize.csv", ',', Charset.forName("UTF-8"));
-//      var onerow=new Array[String](totalijw2Dsize.length)
-//      for(j<-0 until onerow.length)
-//        onerow(j)=String.valueOf(totalijw2Dsize(j))
-//      csvWriter.writeRecord(onerow);
-//    csvWriter.close();
-//
-//    csvWriter = new CsvWriter("./out/hadoopijwweight.csv", ',', Charset.forName("UTF-8"));
-//    for(i<-0 until totalijw2Dweight.length){
-//      var onerow=new Array[String](totalijw2Dweight(0).length)
-//      for(j<-0 until onerow.length) {
-//        onerow(j)=String.valueOf(totalijw2Dweight(i)(j))
-//      };
-//      csvWriter.writeRecord(onerow);
-//    }
-//    csvWriter.close();
+    //broadcast totalijw2Dweight
+    val broadijw2Dweight: Broadcast[Array[Array[Double]]] =spark.broadcast(totalijw2Dweight)
+
+    //parallel the Ktotal
+    val KtotalClass= new KtotalCal(totalblockidxRDD,broadijw2D,broadijw2Dsize,broadimg2D,
+      broadijw2Dweight,broadtrainidx,header,gam_K)
+    KtotalClass.process()
+    val Ktotal: Array[Array[Double]] =KtotalClass.getKtotal
+
+    val t4 = System.currentTimeMillis
+    println("ker_lwm end time:"+df.format(new Date))
+    println("ker_lwm time:" + (t4 - t3) * 1.0 / 1000 + "s")
+
+    //putout
+    var csvWriter = new CsvWriter("./out/hadoopktotal.csv", ',', Charset.forName("UTF-8"));
+    for(i<-0 until Ktotal.length){
+      var onerow=new Array[String](Ktotal(0).length)
+      for(j<-0 until onerow.length) {
+        onerow(j)=String.valueOf(Ktotal(i)(j))
+      };
+      csvWriter.writeRecord(onerow);
+    }
+    csvWriter.close();
 
 
   }

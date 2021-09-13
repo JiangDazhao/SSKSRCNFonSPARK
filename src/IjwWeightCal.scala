@@ -25,7 +25,6 @@ class IjwWeightCal(val totalblockidx:RDD[(Int,Array[Short])],
       val problockijwweight1_len=problockijwweight1(0).length
       val problockijwweight2_len=problockijwweight2(0).length
       var prosumijwweight=Array.ofDim[Double](nwind, problockijwweight1_len+problockijwweight2_len)
-      println("left和right长度"+problockijwweight1_len+" "+problockijwweight2_len)
       for (i<- 0 until problockijwweight1_len){
         for(j<-0 until nwind){
           prosumijwweight(j)(i)=problockijwweight1(j)(i)
