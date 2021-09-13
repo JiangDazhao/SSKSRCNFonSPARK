@@ -7,20 +7,20 @@ import java.util.Arrays;
 
 
 public class Data {
-      static short [][] rawimg2D;
-      static double [][] img2D;
+       short [][] rawimg2D;
+       double [][] img2D;
      // static double [][][] img3D;
-      static int [][] img_gt;
-      static int [] trainidx2D;
-      static int [] testidx2D;
-      static int [] trainlab;
-      static int [] testlab;
-      static int [] totalidx2D;
-      static int [] totallab;
+       int [][] img_gt;
+       int [] trainidx2D;
+       int [] testidx2D;
+       int [] trainlab;
+       int [] testlab;
+       int [] totalidx2D;
+        int [] totallab;
 
-      static int rows;
-      static int cols;
-      static int bands;
+       int rows;
+       int cols;
+       int bands;
     public Data(String sdataset, String strainidx2D, String stestidx2D, String groundtruth,String stotalidx2D) throws IOException {
         //load img data
         String datapathname="./resources/"+sdataset;
@@ -137,6 +137,7 @@ public class Data {
                 img2D[i][j]=(rawimg2D[i][j]-lmin)/lmax;
             }
 
+
 //        this.img3D=new double[rows][cols][bands];
 //        for (int i=0;i<bands;i++)
 //            for(int j=0;j<rows*cols;j++)
@@ -145,6 +146,53 @@ public class Data {
 //                int colth= j/rows;
 //                img3D[rowth][colth][i]=img2D[i][j];
 //            }
+    }
+    public short[][] getRawimg2D() {
+        return rawimg2D;
+    }
+
+    public double[][] getImg2D() {
+        return img2D;
+    }
+
+    public int[][] getImg_gt() {
+        return img_gt;
+    }
+
+    public int[] getTrainidx2D() {
+        return trainidx2D;
+    }
+
+    public int[] getTestidx2D() {
+        return testidx2D;
+    }
+
+    public int[] getTrainlab() {
+        return trainlab;
+    }
+
+    public int[] getTestlab() {
+        return testlab;
+    }
+
+    public int[] getTotalidx2D() {
+        return totalidx2D;
+    }
+
+    public int[] getTotallab() {
+        return totallab;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public int getBands() {
+        return bands;
     }
 
 }

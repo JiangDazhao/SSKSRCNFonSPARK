@@ -193,12 +193,13 @@ public class Tools {
     }
 
 
-    public static Tuple2<int[][],int[]> blockIjw2DCal(short[]idx, int[][]pos, int rows, int cols, int wind){
+    public static Tuple2<int[][],int[]> blockIjw2DCal(short[]idx, int[][]pos,
+                                                      int offset,int rows, int cols, int wind){
         int [][]blockijw=new int[(2*wind+1)*(2*wind+1)][idx.length];
         int []blockijwsize=new int[idx.length];
         for(int n=0;n<idx.length;n++){
-            int i=pos[n][0];
-            int j=pos[n][1];
+            int i=pos[offset+n][0];
+            int j=pos[offset+n][1];
             int iw_begin=Math.max(i-wind,0);
             int iw_end=Math.min(i+wind,rows-1);
             int jw_begin=Math.max(j-wind,0);
@@ -258,7 +259,7 @@ public class Tools {
             int img2Didxheart= blockidx[n];
             double []imgheart= Tools.img2Didx_pixel(img2Didxheart,bands,img2D);
             for(int windidxab=0;windidxab<totalijw_size[offset+n];windidxab++){
-                int img2Didxab= total_ijw2D[windidxab][n];
+                int img2Didxab= total_ijw2D[windidxab][offset+n];
                 double []imgab= Tools.img2Didx_pixel(img2Didxab,bands,img2D);
                 blockijw2D_weight[windidxab][n]= Tools.kernelcompute(imgheart,imgab,gam_w);
             }

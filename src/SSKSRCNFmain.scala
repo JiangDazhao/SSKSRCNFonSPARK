@@ -83,17 +83,26 @@ object SSKSRCNFmain {
       broadimg2D,header,wind,gam_w)
     totalijw2DweightClass.process()
     val totalijw2Dweight: Array[Array[Double]] =totalijw2DweightClass.getIjw2dWeight
-    var csvWriter = new CsvWriter("./out/sparktotalijw2Dweight.csv", ',', Charset.forName("UTF-8"));
-    for(i<-0 until totalijw2Dweight.length){
-      var onerow=new Array[String](totalijw2Dweight(0).length)
-      for(j<-0 until onerow.length) {
-        onerow(j)=String.valueOf(totalijw2Dweight(i)(j))
-      };
-      csvWriter.writeRecord(onerow);
-    }
-    csvWriter.close();
-    
 
+
+
+
+
+
+
+
+
+
+
+    //    var csvWriter = new CsvWriter("./out/sparktotalijw2Dweight.csv", ',', Charset.forName("UTF-8"));
+//    for(i<-0 until totalijw2Dweight.length){
+//      var onerow=new Array[String](totalijw2Dweight(0).length)
+//      for(j<-0 until onerow.length) {
+//        onerow(j)=String.valueOf(totalijw2Dweight(i)(j))
+//      };
+//      csvWriter.writeRecord(onerow);
+//    }
+//    csvWriter.close();
 
 
 //    var csvWriter = new CsvWriter("./out/sparktotalijw2D.csv", ',', Charset.forName("UTF-8"));

@@ -12,8 +12,9 @@ class Totalijw2DCal(val totalblockidx:RDD[(Int,Array[Short])],val broadpos:Broad
   private val nwind=(2 * wind + 1) * (2 * wind + 1)
   private [this] def getAboutTotalijw2D:Unit={
     totalijw2DTuple=totalblockidx.map(pair=>{
+      val offset = pair._1
       val blockidx=pair._2
-      val tuple= Tools.blockIjw2DCal(blockidx,pos,rownum,colnum,windin)
+      val tuple= Tools.blockIjw2DCal(blockidx,pos,offset,rownum,colnum,windin)
       val blockijw2D=tuple._1
       val blockijwsize=tuple._2
         (blockijw2D,blockijwsize)

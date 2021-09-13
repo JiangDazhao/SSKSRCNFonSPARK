@@ -7,10 +7,11 @@ object postest {
       .setAppName("JavaParallelTest")
       .setMaster("local")
       .set("spark.testing.memory", "2147480000")
-    val sc=new SparkContext(conf)
+    val spark=new SparkContext(conf)
 
 
-    val totalblockidxRDD = sc.parallelize(
+
+    val totalblockidxRDD = spark.parallelize(
       Array((1,Array(1.toShort,2.toShort,3.toShort)),
         (2,Array(4.toShort,5.toShort,6.toShort)),
         (3,Array(7.toShort,8.toShort,9.toShort)),
