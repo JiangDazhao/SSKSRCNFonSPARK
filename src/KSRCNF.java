@@ -22,9 +22,9 @@ public class KSRCNF {
     static int[][] img_gt;
     static int []trainidx2D;
     static int []testidx2D;
-    static int []trainlab;
-    static int []testlab;
-    static int [] totallab;
+    static short []trainlab;
+    static short []testlab;
+    static short [] totallab;
 
     static int [] totalidx2D;
 
@@ -254,6 +254,8 @@ public class KSRCNF {
 
                  }
              }
+           //  System.out.println("upresult: "+upresult);
+            //System.out.println("sumwa: "+sumwa+" sumwb: "+sumwb);
              div= sumwa*sumwb;
              result=upresult/div;
              return result;

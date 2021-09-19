@@ -13,10 +13,10 @@ public class Data {
        int [][] img_gt;
        int [] trainidx2D;
        int [] testidx2D;
-       int [] trainlab;
-       int [] testlab;
        int [] totalidx2D;
-        int [] totallab;
+       short [] trainlab;
+       short [] testlab;
+       short [] totallab;
 
        int rows;
        int cols;
@@ -79,27 +79,27 @@ public class Data {
             this.totalidx2D[i]= matrix_total.getAsInt(0,i)-1;
 
         //trainlab
-        this.trainlab=new int[trainidx2D.length];
+        this.trainlab=new short[trainidx2D.length];
         for(int i=0;i<trainlab.length;i++){
             int gdrow= trainidx2D[i]%rows;
             int gdcol=trainidx2D[i]/cols;
-            trainlab[i]=img_gt[gdrow][gdcol];
+            trainlab[i]=(short)img_gt[gdrow][gdcol];
         }
 
         //testlab
-        this.testlab=new int[testidx2D.length];
+        this.testlab=new short[testidx2D.length];
         for(int i=0;i<testlab.length;i++){
             int gdrow= testidx2D[i]%rows;
             int gdcol=testidx2D[i]/cols;
-            testlab[i]=img_gt[gdrow][gdcol];
+            testlab[i]=(short)img_gt[gdrow][gdcol];
         }
 
         //totallab
-        this.totallab=new int[totalidx2D.length];
+        this.totallab=new short[totalidx2D.length];
         for(int i=0;i<totallab.length;i++){
             int gdrow= totalidx2D[i]%rows;
             int gdcol=totalidx2D[i]/cols;
-            totallab[i]=img_gt[gdrow][gdcol];
+            totallab[i]=(short)img_gt[gdrow][gdcol];
         }
 
 
@@ -167,11 +167,11 @@ public class Data {
         return testidx2D;
     }
 
-    public int[] getTrainlab() {
+    public short[] getTrainlab() {
         return trainlab;
     }
 
-    public int[] getTestlab() {
+    public short[] getTestlab() {
         return testlab;
     }
 
@@ -179,7 +179,7 @@ public class Data {
         return totalidx2D;
     }
 
-    public int[] getTotallab() {
+    public short[] getTotallab() {
         return totallab;
     }
 

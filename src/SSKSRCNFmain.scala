@@ -54,6 +54,8 @@ object SSKSRCNFmain {
     val broadimg2D: Broadcast[Array[Array[Double]]] =spark.broadcast((alldata.getImg2D))
     //broadcast trainidx
     val broadtrainidx: Broadcast[Array[Short]] =spark.broadcast((alldata.getTrainidx2D))
+    //initialize totallength
+    val totallength=alldata.getTotallab.length
 
     val t1 = System.currentTimeMillis
     println("readdata start time:"+df.format(new Date))
@@ -79,7 +81,7 @@ object SSKSRCNFmain {
     println("ker_lwm start time:"+df.format(new Date))
 
     //parallel the pos calculation
-    val posclass=new PosCal(totalblockidxRDD,header)
+    val posclass=new PosCal(totalblockidxRDD,header,totallength)
     posclass.process()
     val pos: Array[Array[Int]] = posclass.getpos
 
@@ -87,10 +89,11 @@ object SSKSRCNFmain {
     val broadpos: Broadcast[Array[Array[Int]]] = spark.broadcast(pos)
 
     //parallel the totalijw2D and totalijw_size
-    val totalijw2Dclass= new Totalijw2DCal(totalblockidxRDD,broadpos,header,wind)
+    val totalijw2Dclass= new Totalijw2DCal(totalblockidxRDD,broadpos,header,wind,totallength)
     totalijw2Dclass.process()
     val totalijw2D: Array[Array[Int]] =totalijw2Dclass.getTotalijw2D
     val totalijw2Dsize: Array[Int] =totalijw2Dclass.getTotalijw2DSize
+
 
     //broadcast ijw2D ijw2Dsize
     val broadijw2D: Broadcast[Array[Array[Int]]]=spark.broadcast(totalijw2D)
@@ -98,7 +101,7 @@ object SSKSRCNFmain {
 
     //parallel the totalijw2Dweight
     val totalijw2DweightClass= new IjwWeightCal(totalblockidxRDD,broadijw2D,broadijw2Dsize,
-      broadimg2D,header,wind,gam_w)
+      broadimg2D,header,wind,gam_w,totallength)
     totalijw2DweightClass.process()
     val totalijw2Dweight: Array[Array[Double]] =totalijw2DweightClass.getIjw2dWeight
 
@@ -107,7 +110,7 @@ object SSKSRCNFmain {
 
     //parallel the Ktotal
     val KtotalClass= new KtotalCal(totalblockidxRDD,broadijw2D,broadijw2Dsize,broadimg2D,
-      broadijw2Dweight,broadtrainidx,header,gam_K)
+      broadijw2Dweight,broadtrainidx,header,gam_K,totallength)
     KtotalClass.process()
     val Ktotal: Array[Array[Double]] =KtotalClass.getKtotal
 
@@ -115,6 +118,35 @@ object SSKSRCNFmain {
     println("ker_lwm end time:"+df.format(new Date))
     println("ker_lwm time:" + (t4 - t3) * 1.0 / 1000 + "s")
 
+    //Ktrain and Ktest
+    val Ktraincollen=alldata.getTrainidx2D.length
+    val Ktestcollen=totallength-Ktraincollen
+    val Ktrain= Array.ofDim[Double](Ktraincollen,Ktraincollen)
+    val Ktest=Array.ofDim[Double](Ktraincollen,totallength-Ktestcollen)
+    for(i<-0 until(Ktraincollen))
+      for (j<-0 until(Ktraincollen))
+        Ktrain(j)(i)=Ktotal(j)(i)
+    for(i<-0 until(Ktestcollen))
+      for(j<-0 until(Ktraincollen))
+        Ktest(j)(i)=Ktotal(j)(Ktraincollen+i)
+
+    //ADMM
+    val t5 = System.currentTimeMillis
+    println("ADMM start time:"+df.format(new Date))
+    val S = Tools.ADMM(Ktrain, Ktest, mu, lam)
+    val t6 = System.currentTimeMillis
+    println("ADMM end time:"+df.format(new Date))
+    println("ADMM time:" + (t6- t5) * 1.0 / 1000 + "s")
+
+    //pred
+    val testlab=alldata.getTestlab
+    val trainlab=alldata.getTrainlab
+    var pred = Tools.classker_pred(Ktrain, Ktest, S.getArrayCopy, testlab, trainlab)
+
+    //OA
+    val OA = Tools.classeval(pred, testlab)
+    System.out.println("Overall Accuracy:%.2f%%".format(OA))
+    System.out.println("End time:" + df.format(new Date))
   }
 }
 

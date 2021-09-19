@@ -8,7 +8,7 @@ object HadoopIjw2DWeightTest {
   def main(args: Array[String]): Unit = {
     val conf= new SparkConf()
       .setAppName("JavaParallelTest")
-      .setMaster("local")
+      .setMaster("local[*]")
       .set("spark.testing.memory", "2147480000")
     val spark=new SparkContext(conf)
 
@@ -34,6 +34,8 @@ object HadoopIjw2DWeightTest {
       "Indian_gt.mat",
       "totalsample_990_61.mat")
     val broadimg2D: Broadcast[Array[Array[Double]]] =spark.broadcast((alldata.getImg2D))
+    //initialize totallength
+    val totallength=alldata.getTotallab.length
 
     //partition the totalblockbyteRDD
     val notblockdata=alldata.getTotalidx2D
@@ -55,7 +57,7 @@ object HadoopIjw2DWeightTest {
     val totalblockidxRDD= notsortblockidxRDD.sortByKey()
 
     //parallel the pos calculation
-    val posclass=new PosCal(totalblockidxRDD,header)
+    val posclass=new PosCal(totalblockidxRDD,header,totallength)
     posclass.process()
     val pos: Array[Array[Int]] = posclass.getpos
 
@@ -63,7 +65,7 @@ object HadoopIjw2DWeightTest {
     val broadpos: Broadcast[Array[Array[Int]]] = spark.broadcast(pos)
 
     //parallel the totalijw2D and totalijw_size
-    val totalijw2Dclass= new Totalijw2DCal(totalblockidxRDD,broadpos,header,wind)
+    val totalijw2Dclass= new Totalijw2DCal(totalblockidxRDD,broadpos,header,wind,totallength)
     totalijw2Dclass.process()
     val totalijw2D: Array[Array[Int]] =totalijw2Dclass.getTotalijw2D
     val totalijw2Dsize: Array[Int] =totalijw2Dclass.getTotalijw2DSize
@@ -75,7 +77,7 @@ object HadoopIjw2DWeightTest {
 
     //parallel the totalijw2Dweight
     val totalijw2DweightClass= new IjwWeightCal(totalblockidxRDD,broadijw2D,broadijw2Dsize,
-      broadimg2D,header,wind,gam_w)
+      broadimg2D,header,wind,gam_w,totallength)
     totalijw2DweightClass.process()
     val totalijw2Dweight: Array[Array[Double]] =totalijw2DweightClass.getIjw2dWeight
 
@@ -96,8 +98,8 @@ object HadoopIjw2DWeightTest {
 //        onerow(j)=String.valueOf(totalijw2Dsize(j))
 //      csvWriter.writeRecord(onerow);
 //    csvWriter.close();
-//
-//    csvWriter = new CsvWriter("./out/hadoopijwweight.csv", ',', Charset.forName("UTF-8"));
+
+//    var csvWriter = new CsvWriter("./out/hadoopijwweight.csv", ',', Charset.forName("UTF-8"));
 //    for(i<-0 until totalijw2Dweight.length){
 //      var onerow=new Array[String](totalijw2Dweight(0).length)
 //      for(j<-0 until onerow.length) {

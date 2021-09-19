@@ -39,8 +39,8 @@ public class Main {
         System.out.println(df.format(new Date()));
 
 
-        int []trainlab=KSRCNF.trainlab;
-        int []testlab=KSRCNF.testlab;
+        short []trainlab=KSRCNF.trainlab;
+        short []testlab=KSRCNF.testlab;
        // for(int i=0;i<trainlab.length;i++) System.out.println(trainlab[i]);
         int rows =KSRCNF.rows;
         int cols =KSRCNF.cols;
@@ -73,7 +73,6 @@ public class Main {
         double OA;
         OA= Tools.classeval(pred,testlab);
         System.out.println("Overall Accuracy:"+String.format("%.2f",OA)+"%");
-
         System.out.println("end time:"+df.format(new Date()));
 
 //        CsvWriter csvWriter = new CsvWriter("./out/Ktrain.csv", ',', Charset.forName("UTF-8"));

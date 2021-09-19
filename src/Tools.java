@@ -53,13 +53,13 @@ public class Tools {
 
     public static int[] classker_pred(double[][]ATA,double[][]ATX,
                                       double[][]coef,
-                                      int[]test_lab, int[]dict_lab){
+                                      short[]test_lab, short[]dict_lab){
         int [] pred= new int[test_lab.length];
         double [][]preddisterr;
         Set<Integer>classinDict_pert;
         int nClass;
         int nTest;
-        Set <Integer>clsset= new HashSet();
+        Set <Short>clsset= new HashSet();
         for(int i=0;i<dict_lab.length;i++){
             clsset.add(dict_lab[i]);
         }
@@ -120,7 +120,7 @@ public class Tools {
     }
 
 
-    public static double classeval(int[]pred, int[]testlab){
+    public static double classeval(int[]pred, short[]testlab){
         double OA=0;
         for(int i=0;i<pred.length;i++){
                if (pred[i]==testlab[i]) OA+=1.0;
@@ -269,9 +269,13 @@ public class Tools {
     }
 
     //Ktotalelement_compute
-    public static double[][] blockKtotalcal(short[]blockidx,int[][]total_ijw2D,int[]totalijw_size,
-                                            double[][]img2D,double[][] totalijw2D_weight,
-                                            int Ktotalrow,int offset,int bands,double gam_K){
+    public static double[][] blockKtotalcal(short[]blockidx,
+                                            int[][]total_ijw2D,
+                                            int[]totalijw_size,
+                                            double[][]img2D,
+                                            double[][] totalijw2D_weight,
+                                            int Ktotalrow,int offset,int bands,
+                                            double gam_K){
         double [][]blockKtotal=new double[Ktotalrow][blockidx.length];
         double [][]upresult=new double[Ktotalrow][blockidx.length];
         double [][]div=new double[Ktotalrow][blockidx.length];
@@ -280,19 +284,24 @@ public class Tools {
 
         //sumwa
         for(int n=0;n<Ktotalrow;n++){
+            double temp=0;
             for(int i=0;i<totalijw_size[n];i++)
-                sumwa[n]+=totalijw2D_weight[i][n];
+                temp+=totalijw2D_weight[i][n];
+            sumwa[n]=temp;
         }
 
         //sumwb
         for(int n=0;n<blockidx.length;n++){
+            double temp=0;
             for(int i=0;i<totalijw_size[offset+n];i++)
-                sumwb[n]+=totalijw2D_weight[i][offset+n];
+                temp+=totalijw2D_weight[i][offset+n];
+            sumwb[n]=temp;
         }
 
         //blockKtotal
         for(int n=0;n<Ktotalrow;n++){
             for(int m=0;m<blockidx.length;m++){
+                double temp=0;
                 for(int a=0;a<totalijw_size[n];a++){
                     for(int b=0;b<totalijw_size[offset+m];b++){
                         int img2Didxa = total_ijw2D[a][n];
@@ -302,11 +311,16 @@ public class Tools {
                         double kernelK= Tools.kernelcompute(imga,imgb,gam_K);
                         double kernelmulwab= kernelK*totalijw2D_weight[a][n]
                                 *totalijw2D_weight[b][offset+m];
-                        upresult[n][m]+=kernelmulwab;
+                        temp+=kernelmulwab;
                     }
                 }
-                div[n][m]= sumwa[n]*sumwb[m];
+                upresult[n][m]=temp;
+                double temp2=0;
+                temp2=sumwa[n]*sumwb[m];
+                div[n][m]=temp2;
                 blockKtotal[n][m]=upresult[n][m]/div[n][m];
+                //System.out.println("upresult: "+upresult[n][m]);
+                //System.out.println("sumwa: "+sumwa[n]+" sumwb: "+sumwb[m]);
             }
         }
 
